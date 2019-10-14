@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Citrix Requests" max_length="40" name="x_cion_citrix_it_s_citrix_requests" type="collection">
-        <element attributes="edge_encryption_enabled=true" label="Requested Item" max_length="32" name="requested_item" reference="sc_req_item" type="reference"/>
+        <element attributes="edge_encryption_enabled=true,encode_utf8=false" label="Requested Item" max_length="32" name="requested_item" reference="sc_req_item" type="reference"/>
         <index name="index">
             <element name="requested_item"/>
         </index>

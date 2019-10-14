@@ -220,7 +220,7 @@
         <sys_updated_on>2018-07-19 19:59:43</sys_updated_on>
     </wf_condition>
     <wf_activity action="INSERT_OR_UPDATE">
-        <activity_definition display_value="Add User to Desktop Group">444cc197db971b00677d3437b9961925</activity_definition>
+        <activity_definition display_value="">444cc197db971b00677d3437b9961925</activity_definition>
         <activity_definition_updated>false</activity_definition_updated>
         <databus_lookup_id>6</databus_lookup_id>
         <height/>
@@ -251,7 +251,7 @@
     <wf_condition action="INSERT_OR_UPDATE">
         <activity display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</activity>
         <condition>activityOutput.result == 'failure'</condition>
-        <condition_default display_value="Failure">85dc8197db971b00677d3437b9961996</condition_default>
+        <condition_default display_value="">85dc8197db971b00677d3437b9961996</condition_default>
         <condition_type>standard</condition_type>
         <else_flag>false</else_flag>
         <error>false</error>
@@ -272,7 +272,7 @@
     <wf_condition action="INSERT_OR_UPDATE">
         <activity display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</activity>
         <condition>activityOutput.result == 'success'</condition>
-        <condition_default display_value="Success">788c4197db971b00677d3437b99619a6</condition_default>
+        <condition_default display_value="">788c4197db971b00677d3437b99619a6</condition_default>
         <condition_type>standard</condition_type>
         <else_flag>false</else_flag>
         <error>false</error>

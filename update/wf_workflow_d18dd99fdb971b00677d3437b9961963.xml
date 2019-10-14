@@ -576,7 +576,7 @@ function ifScript() {&#13;
         <sys_updated_on>2018-08-02 21:34:14</sys_updated_on>
     </wf_condition>
     <wf_activity action="INSERT_OR_UPDATE">
-        <activity_definition display_value="Reset User Session">c76b65b7dbeb5f00677d3437b996192b</activity_definition>
+        <activity_definition display_value="">c76b65b7dbeb5f00677d3437b996192b</activity_definition>
         <activity_definition_updated>false</activity_definition_updated>
         <databus_lookup_id>5</databus_lookup_id>
         <height/>
@@ -607,7 +607,7 @@ function ifScript() {&#13;
     <wf_condition action="INSERT_OR_UPDATE">
         <activity display_value="Session Reset">8a1c293bdbeb5f00677d3437b9961928</activity>
         <condition>activityOutput.result == 'failure'</condition>
-        <condition_default display_value="Failure">fa4e199fdb971b00677d3437b9961901</condition_default>
+        <condition_default display_value="">fa4e199fdb971b00677d3437b9961901</condition_default>
         <condition_type>standard</condition_type>
         <else_flag>false</else_flag>
         <error>false</error>
@@ -628,7 +628,7 @@ function ifScript() {&#13;
     <wf_condition action="INSERT_OR_UPDATE">
         <activity display_value="Session Reset">8a1c293bdbeb5f00677d3437b9961928</activity>
         <condition>activityOutput.result == 'success'</condition>
-        <condition_default display_value="Success">6d1e999fdb971b00677d3437b99619b7</condition_default>
+        <condition_default display_value="">6d1e999fdb971b00677d3437b99619b7</condition_default>
         <condition_type>standard</condition_type>
         <else_flag>false</else_flag>
         <error>false</error>

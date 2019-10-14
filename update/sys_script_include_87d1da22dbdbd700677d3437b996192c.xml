@@ -3,6 +3,7 @@
         <access>package_private</access>
         <active>true</active>
         <api_name>x_cion_citrix_it_s.CTXClientRequest</api_name>
+        <caller_access/>
         <client_callable>true</client_callable>
         <description/>
         <name>CTXClientRequest</name>

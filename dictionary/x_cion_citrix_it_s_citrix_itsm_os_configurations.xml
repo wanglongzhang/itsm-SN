@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Citrix ITSM OS Configurations" max_length="40" name="x_cion_citrix_it_s_citrix_itsm_os_configurations" type="collection">
         <element attributes="edge_encryption_enabled=true,no_sort=true,slushbucket_ref_no_expand=true" label="Desktop Groups" max_length="4000" name="desktop_groups" reference="x_cion_citrix_it_s_citrix_itsm_desktop_group" type="glide_list"/>
-        <element attributes="edge_encryption_enabled=true" label="Machine Catalog" max_length="32" name="machine_catalog" reference="x_cion_citrix_it_s_citrix_itsm_machine_catalogs" type="reference"/>
+        <element attributes="edge_encryption_enabled=true,encode_utf8=false" label="Machine Catalog" max_length="32" name="machine_catalog" reference="x_cion_citrix_it_s_citrix_itsm_machine_catalogs" type="reference"/>
         <element display="true" label="Name" max_length="100" name="name" type="string"/>
-        <element attributes="edge_encryption_enabled=true" label="Site" max_length="32" name="site" reference="x_cion_citrix_it_s_citrix_itsm_sites" type="reference"/>
+        <element attributes="edge_encryption_enabled=true,encode_utf8=false" label="Site" max_length="32" name="site" reference="x_cion_citrix_it_s_citrix_itsm_sites" type="reference"/>
         <index name="index">
             <element name="site"/>
         </index>

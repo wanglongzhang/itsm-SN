@@ -4,24 +4,24 @@
         <license_condition/>
         <license_model>none</license_model>
         <license_roles/>
-        <name>x_cion_citrix_it_s_citrix_itsm_access_given</name>
+        <name>x_cion_citrix_it_s_citrix_itsm_os_configurations</name>
         <op_delete>true</op_delete>
         <op_insert>true</op_insert>
         <op_update>true</op_update>
-        <owner_condition table="x_cion_citrix_it_s_citrix_itsm_access_given">sys_created_by=javascript:gs.getUserName()^EQ<item endquery="false" field="sys_created_by" goto="false" newquery="false" operator="=" or="false" value="javascript:gs.getUserName()"/>
+        <owner_condition table="x_cion_citrix_it_s_citrix_itsm_os_configurations">sys_created_by=javascript:gs.getUserName()^EQ<item endquery="false" field="sys_created_by" goto="false" newquery="false" operator="=" or="false" value="javascript:gs.getUserName()"/>
             <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
         </owner_condition>
         <sys_class_name>ua_table_licensing_config</sys_class_name>
         <sys_created_by>sebastiang</sys_created_by>
-        <sys_created_on>2018-07-18 21:50:51</sys_created_on>
-        <sys_id>0fef25a3db900010f11ca0f2ca96192c</sys_id>
+        <sys_created_on>2018-07-17 20:29:31</sys_created_on>
+        <sys_id>deb3274adbc400d0d6255223dc961962</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>x_cion_citrix_it_s_citrix_itsm_access_given</sys_name>
+        <sys_name>x_cion_citrix_it_s_citrix_itsm_os_configurations</sys_name>
         <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
         <sys_policy/>
         <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
-        <sys_update_name>ua_table_licensing_config_0fef25a3db900010f11ca0f2ca96192c</sys_update_name>
+        <sys_update_name>ua_table_licensing_config_deb3274adbc400d0d6255223dc961962</sys_update_name>
         <sys_updated_by>sebastiang</sys_updated_by>
-        <sys_updated_on>2018-07-18 21:50:51</sys_updated_on>
+        <sys_updated_on>2018-07-17 20:29:31</sys_updated_on>
     </ua_table_licensing_config>
 </record_update>
