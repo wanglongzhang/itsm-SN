@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXDesktopProvision</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXDesktopProvision</name>
+        <script><![CDATA[var CTXDesktopProvision = Class.create();
+CTXDesktopProvision.prototype = {
+	initialize: function() {
+		
+		this.API_URL = gs.getProperty('x_cion_citrix_it_s.api_url');
+		this.GET_OS_ENDPOINT = this.API_URL+"/api/XAXD/GetAvaliableOS";
+		this.ASSIGN_DESKTOP_ENDPOINT = this.API_URL+'/api/XAXD/AssignDesktopGroup';
+		this.GET_OS_HEADERS = {
+			"Content-Type":"application/json",
+			"customerid":"",
+			"Authorization":"CWSAuth bearer="
+		};
+		
+	},
+	API_URL:'',
+	GET_OS_ENDPOINT:'',
+	ASSIGN_DESKTOP_ENDPOINT:'',
+	
+	GET_OS_HEADERS: {},
+	
+	_generateDefaultHeaders:function(){
+		var logger = new Logger();
+		var customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+		
+		var headers = this.GET_OS_HEADERS;
+		
+		var auth = new AuthToken();
+		var token = auth.getToken();
+		var authString = headers["Authorization"];
+		authString += token;
+		
+		headers["customerid"] = customer_id;
+		headers["Authorization"] = authString;
+		
+		return headers;
+	},
+	
+	getAvailableConfigs: function(){
+		var logger = new Logger();
+		var headers = this._generateDefaultHeaders();
+		var rest = new RESTRequest();
+		
+		var osResponse = rest.get(this.GET_OS_ENDPOINT,headers);
+		
+		try{
+		
+			var configs = JSON.parse(osResponse);
+			return configs;
+		}catch(error){
+			
+			logger.logError("Unable to get available Desktop configs");
+			logger.logError(osResponse);
+			logger.logError(error);
+			return null;
+		}
+		
+	},
+	
+	
+	_generateAssignDesktopBody:function(user,desktopGroup,siteId){
+		var userTool = new CTXUserTools();
+		var userDomain = userTool.getUserDomain();
+		var body = {
+			"user":[{"UserName":user,"domain":userDomain}],
+			"DesktopGroups":[desktopGroup],
+			"siteId":siteId
+		};
+		
+		return body;
+		
+	},
+	assignDesktopGroup:function(user,desktopGroup,siteId){
+		var logger = new Logger();
+		
+		var headers = this._generateDefaultHeaders();
+		headers["siteid"] = siteId;
+		
+		var body = this._generateAssignDesktopBody(user,desktopGroup,siteId);
+		var rest = new RESTRequest();
+		
+		var desktopAssignResponse = rest.post(this.ASSIGN_DESKTOP_ENDPOINT,headers,body);
+		
+		return desktopAssignResponse;
+	},
+	
+	type: 'CTXDesktopProvision'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:53:36</sys_created_on>
+        <sys_id>ee2292a2dbdbd700677d3437b9961921</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>CTXDesktopProvision</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_ee2292a2dbdbd700677d3437b9961921</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-09-25 17:33:24</sys_updated_on>
+    </sys_script_include>
+</record_update>

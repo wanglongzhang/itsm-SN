@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="wf_workflow_version">
+    <wf_workflow_version action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <activity_stages>{"subflows":[],"stages":{},"activities":{},"ends":["ab9a8957db971b00677d3437b99619d6"]}</activity_stages>
+        <after_business_rules>false</after_business_rules>
+        <checked_out/>
+        <checked_out_by/>
+        <column_renderer display_value="Workflow-driven">a56213111b030100adca1e094f0713ac</column_renderer>
+        <condition/>
+        <condition_type/>
+        <description/>
+        <expected_sequences>a79a8957db971b00677d3437b99619d6,05ca8957db971b00677d3437b99619b0,a7fac557db971b00677d3437b99619f1,093b0957db971b00677d3437b9961948,ddaf4197db971b00677d3437b99619a8,faef0597db971b00677d3437b99619d5,ab9a8957db971b00677d3437b99619d6</expected_sequences>
+        <expected_time>1970-01-01 14:00:00</expected_time>
+        <expected_time_type/>
+        <full_sequences>a79a8957db971b00677d3437b99619d6,05ca8957db971b00677d3437b99619b0,a7fac557db971b00677d3437b99619f1,093b0957db971b00677d3437b9961948,ddaf4197db971b00677d3437b99619a8,faef0597db971b00677d3437b99619d5,b5105597db971b00677d3437b9961929,ab9a8957db971b00677d3437b99619d6</full_sequences>
+        <journal/>
+        <max_activity_count>100</max_activity_count>
+        <name>CTX Desktop Provisioning</name>
+        <not_cacheable>false</not_cacheable>
+        <on_cancel><![CDATA[// This script executes if the workflow is cancelled.// The global variable context_sys_id contains the sys_id of the cancelled workflow context.]]></on_cancel>
+        <order>100</order>
+        <pin_type>set_by_activity</pin_type>
+        <published>true</published>
+        <relative_duration/>
+        <requires_ert>true</requires_ert>
+        <run_multiple>false</run_multiple>
+        <schedule/>
+        <stage_field>stage</stage_field>
+        <stage_order>computed</stage_order>
+        <start display_value="Begin">a79a8957db971b00677d3437b99619d6</start>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>7a7a4957db971b00677d3437b99619ed</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2018-08-08 07:08:27</sys_updated_on>
+        <table>sc_req_item</table>
+        <timezone/>
+        <validated>true</validated>
+        <workflow display_value="CTX Desktop Provisioning">6f9a4d17db971b00677d3437b9961979</workflow>
+    </wf_workflow_version>
+    <wf_workflow action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <description/>
+        <name>CTX Desktop Provisioning</name>
+        <preview/>
+        <sys_class_name>wf_workflow</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>6f9a4d17db971b00677d3437b9961979</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>CTX Desktop Provisioning</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>wf_workflow_6f9a4d17db971b00677d3437b9961979</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <table>sc_req_item</table>
+        <template>false</template>
+        <vars/>
+    </wf_workflow>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Completed</name>
+        <ola>1970-01-01 00:00:00</ola>
+        <order>1100</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>239a8957db971b00677d3437b99619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>complete</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Delivery</name>
+        <ola>1970-01-03 00:00:00</ola>
+        <order>140</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>2b9a8957db971b00677d3437b99619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>delivery</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Fulfillment</name>
+        <ola>1970-01-02 00:00:00</ola>
+        <order>120</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>a79a8957db971b00677d3437b99619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>fulfillment</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Request Cancelled</name>
+        <ola>1970-01-01 00:00:00</ola>
+        <order>1000</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>af9a8957db971b00677d3437b99619d6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>Request Cancelled</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Request Approved</name>
+        <ola>1970-01-01 00:00:00</ola>
+        <order>90</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>a39a8957db971b00677d3437b99619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>request_approved</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_stage action="INSERT_OR_UPDATE">
+        <name>Waiting for Approval</name>
+        <ola>1970-01-02 00:00:00</ola>
+        <order>100</order>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>279a8957db971b00677d3437b99619d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <value>waiting_for_approval</value>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_stage>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Set Values">1ca8d7cf0a0a0b265e9a000c2c08248c</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>8</databus_lookup_id>
+        <height/>
+        <input>{}</input>
+        <is_parent>false</is_parent>
+        <name>Add Failure Note</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:43</sys_created_on>
+        <sys_id>b5105597db971b00677d3437b9961929</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:44</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>666</x>
+        <y>380</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=b5105597db971b00677d3437b9961929"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>b5105597db971b00677d3437b9961929</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:43</sys_created_on>
+        <sys_id>f030d1d7db971b00677d3437b9961996</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:43</sys_updated_on>
+        <value>work_notes=Failed to add user to Desktop Group, review logs for errors^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>b5105597db971b00677d3437b9961929</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:43</sys_created_on>
+        <sys_id>f030d1d7db971b00677d3437b9961996</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:43</sys_updated_on>
+        <value>work_notes=Failed to add user to Desktop Group, review logs for errors^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Add Failure Note">b5105597db971b00677d3437b9961929</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:43</sys_created_on>
+        <sys_id>7830d1d7db971b00677d3437b9961996</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:43</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Add User to Desktop Group">444cc197db971b00677d3437b9961925</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>6</databus_lookup_id>
+        <height/>
+        <input>{"user_name":"${workflow.scratchpad.user_name}","desktop_group":"${workflow.scratchpad.desktop_group}","site_id":"${workflow.scratchpad.site_id}"}</input>
+        <is_parent>false</is_parent>
+        <name>Add User To Desktop Group</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:58:11</sys_created_on>
+        <sys_id>ddaf4197db971b00677d3437b99619a8</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:58:22</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>676</x>
+        <y>191</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=ddaf4197db971b00677d3437b99619a8"/>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</activity>
+        <condition>activityOutput.result == 'failure'</condition>
+        <condition_default display_value="Failure">85dc8197db971b00677d3437b9961996</condition_default>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>false</is_positive>
+        <name>Failure</name>
+        <order>10</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:58:11</sys_created_on>
+        <sys_id>e2df0597db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:58:11</sys_updated_on>
+    </wf_condition>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</activity>
+        <condition>activityOutput.result == 'success'</condition>
+        <condition_default display_value="Success">788c4197db971b00677d3437b99619a6</condition_default>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>false</is_positive>
+        <name>Success</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:58:11</sys_created_on>
+        <sys_id>62df0597db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:58:11</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Begin">c7a5e32c0a0a0b3a002377c24ed8ea76</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>1</databus_lookup_id>
+        <height/>
+        <input/>
+        <is_parent>false</is_parent>
+        <name>Begin</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>a79a8957db971b00677d3437b99619d6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width>80</width>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>20</x>
+        <y>20</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=a79a8957db971b00677d3437b99619d6"/>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Begin">a79a8957db971b00677d3437b99619d6</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>2b9a8957db971b00677d3437b99619d6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="End">c7a66f7d0a0a0b3a004544a6d2f14076</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>2</databus_lookup_id>
+        <height/>
+        <input/>
+        <is_parent>false</is_parent>
+        <name>End</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>ab9a8957db971b00677d3437b99619d6</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:39:55</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width>80</width>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>1137</x>
+        <y>486</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=ab9a8957db971b00677d3437b99619d6"/>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Run Script">db8c65aec0a8016501d00259bc7203a4</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>5</databus_lookup_id>
+        <height/>
+        <input>{}</input>
+        <is_parent>false</is_parent>
+        <name>Get Access Records</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:38:18</sys_created_on>
+        <sys_id>093b0957db971b00677d3437b9961948</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:56:47</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>657</x>
+        <y>34</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=093b0957db971b00677d3437b9961948"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>093b0957db971b00677d3437b9961948</document_key>
+        <order>1</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:38:18</sys_created_on>
+        <sys_id>934b4157db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:56:47</sys_updated_on>
+        <value>(function(){&#13;
+	&#13;
+	var userUtil = new CTXUserTools();&#13;
+	&#13;
+	var accessUtil = new CTXAccess();	&#13;
+	var accessRecords = accessUtil.getAccessRecordData(current.getValue('sys_id'));&#13;
+	&#13;
+	var access = accessRecords[0];&#13;
+	var user =  access.users[0];&#13;
+	&#13;
+	workflow.scratchpad.desktop_group = access.desktop_group;&#13;
+	workflow.scratchpad.site_id = access.site_id;&#13;
+	workflow.scratchpad.user_name = userUtil.getUserName(user.sys_id);&#13;
+&#13;
+	&#13;
+	&#13;
+})();</value>
+        <variable display_value="">c35ddef20a0a0ba96248a7090eccd518</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>093b0957db971b00677d3437b9961948</document_key>
+        <order>1</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:38:18</sys_created_on>
+        <sys_id>934b4157db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:56:47</sys_updated_on>
+        <value>(function(){&#13;
+	&#13;
+	var userUtil = new CTXUserTools();&#13;
+	&#13;
+	var accessUtil = new CTXAccess();	&#13;
+	var accessRecords = accessUtil.getAccessRecordData(current.getValue('sys_id'));&#13;
+	&#13;
+	var access = accessRecords[0];&#13;
+	var user =  access.users[0];&#13;
+	&#13;
+	workflow.scratchpad.desktop_group = access.desktop_group;&#13;
+	workflow.scratchpad.site_id = access.site_id;&#13;
+	workflow.scratchpad.user_name = userUtil.getUserName(user.sys_id);&#13;
+&#13;
+	&#13;
+	&#13;
+})();</value>
+        <variable display_value="">c35ddef20a0a0ba96248a7090eccd518</variable>
+    </sys_variable_value>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Get Access Records">093b0957db971b00677d3437b9961948</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:38:18</sys_created_on>
+        <sys_id>1b4b4157db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:38:18</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Set Values">1ca8d7cf0a0a0b265e9a000c2c08248c</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>7</databus_lookup_id>
+        <height/>
+        <input>{}</input>
+        <is_parent>false</is_parent>
+        <name>Set Complete</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:02</sys_created_on>
+        <sys_id>faef0597db971b00677d3437b99619d5</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:04</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>914</x>
+        <y>307</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=faef0597db971b00677d3437b99619d5"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>faef0597db971b00677d3437b99619d5</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:02</sys_created_on>
+        <sys_id>0f00d1d7db971b00677d3437b99619ab</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:02</sys_updated_on>
+        <value>state=3^close_notes=Desktop has been provisioned^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>faef0597db971b00677d3437b99619d5</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:02</sys_created_on>
+        <sys_id>0f00d1d7db971b00677d3437b99619ab</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:02</sys_updated_on>
+        <value>state=3^close_notes=Desktop has been provisioned^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Set Complete">faef0597db971b00677d3437b99619d5</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:02</sys_created_on>
+        <sys_id>8300d1d7db971b00677d3437b99619ac</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:02</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Set Values">1ca8d7cf0a0a0b265e9a000c2c08248c</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>3</databus_lookup_id>
+        <height/>
+        <input>{}</input>
+        <is_parent>false</is_parent>
+        <name>Set Open</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:36:11</sys_created_on>
+        <sys_id>05ca8957db971b00677d3437b99619b0</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:39:48</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>173</x>
+        <y>27</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=05ca8957db971b00677d3437b99619b0"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>05ca8957db971b00677d3437b99619b0</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:36:11</sys_created_on>
+        <sys_id>d8da8557db971b00677d3437b9961928</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:36:11</sys_updated_on>
+        <value>state=1^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>05ca8957db971b00677d3437b99619b0</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:36:11</sys_created_on>
+        <sys_id>d8da8557db971b00677d3437b9961928</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:36:11</sys_updated_on>
+        <value>state=1^EQ</value>
+        <variable display_value="">1cb38c8f0a0a0b266fb48e08de35f507</variable>
+    </sys_variable_value>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Set Open">05ca8957db971b00677d3437b99619b0</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:36:11</sys_created_on>
+        <sys_id>50da8557db971b00677d3437b9961929</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:36:11</sys_updated_on>
+    </wf_condition>
+    <wf_activity action="INSERT_OR_UPDATE">
+        <activity_definition display_value="Wait for condition">d93a02ae0a0a0aa30077abad3fdac035</activity_definition>
+        <activity_definition_updated>false</activity_definition_updated>
+        <databus_lookup_id>4</databus_lookup_id>
+        <height/>
+        <input>{}</input>
+        <is_parent>false</is_parent>
+        <name>Wait for Work In Progress</name>
+        <new_activity_definition/>
+        <notes/>
+        <out_of_date>false</out_of_date>
+        <parent/>
+        <pinned>false</pinned>
+        <pinned_version/>
+        <stage/>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>a7fac557db971b00677d3437b99619f1</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:39:50</sys_updated_on>
+        <timeout>1970-01-01 00:00:00</timeout>
+        <vars/>
+        <width/>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+        <x>411</x>
+        <y>32</y>
+    </wf_activity>
+    <sys_variable_value action="delete_multiple" query="document_key=a7fac557db971b00677d3437b99619f1"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>a7fac557db971b00677d3437b99619f1</document_key>
+        <order>1</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>920b8957db971b00677d3437b99619b7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:08</sys_updated_on>
+        <value>state=2^EQ</value>
+        <variable display_value="">c35dc4cd0a0a0ba96248a70990c1ac54</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>a7fac557db971b00677d3437b99619f1</document_key>
+        <order>2</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>de0b8957db971b00677d3437b99619b6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:08</sys_updated_on>
+        <value>// Set the variable 'answer' to true or false to indicate if the condition has been met or not.&#13;
+answer = true;&#13;
+</value>
+        <variable display_value="">c35debce0a0a0ba96248a709440cf31a</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>a7fac557db971b00677d3437b99619f1</document_key>
+        <order>1</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>920b8957db971b00677d3437b99619b7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:08</sys_updated_on>
+        <value>state=2^EQ</value>
+        <variable display_value="">c35dc4cd0a0a0ba96248a70990c1ac54</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>wf_activity</document>
+        <document_key>a7fac557db971b00677d3437b99619f1</document_key>
+        <order>2</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>de0b8957db971b00677d3437b99619b6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:08</sys_updated_on>
+        <value>// Set the variable 'answer' to true or false to indicate if the condition has been met or not.&#13;
+answer = true;&#13;
+</value>
+        <variable display_value="">c35debce0a0a0ba96248a709440cf31a</variable>
+    </sys_variable_value>
+    <wf_condition action="INSERT_OR_UPDATE">
+        <activity display_value="Wait for Work In Progress">a7fac557db971b00677d3437b99619f1</activity>
+        <condition>true</condition>
+        <condition_default/>
+        <condition_type>standard</condition_type>
+        <else_flag>false</else_flag>
+        <error>false</error>
+        <event>false</event>
+        <event_name/>
+        <is_positive>true</is_positive>
+        <name>Always</name>
+        <order>0</order>
+        <short_description/>
+        <skip_during_generate>false</skip_during_generate>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:08</sys_created_on>
+        <sys_id>1a0b8957db971b00677d3437b99619b7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:08</sys_updated_on>
+    </wf_condition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Success">62df0597db971b00677d3437b99619d5</condition>
+        <from display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:08</sys_created_on>
+        <sys_id>10105d97db971b00677d3437b9961992</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:08</sys_updated_on>
+        <to display_value="Set Complete">faef0597db971b00677d3437b99619d5</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">7830d1d7db971b00677d3437b9961996</condition>
+        <from display_value="Add Failure Note">b5105597db971b00677d3437b9961929</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:48</sys_created_on>
+        <sys_id>1e3055d7db971b00677d3437b9961990</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:48</sys_updated_on>
+        <to display_value="End">ab9a8957db971b00677d3437b99619d6</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">2b9a8957db971b00677d3437b99619d6</condition>
+        <from display_value="Begin">a79a8957db971b00677d3437b99619d6</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:36:18</sys_created_on>
+        <sys_id>4edac117db971b00677d3437b9961912</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:36:18</sys_updated_on>
+        <to display_value="Set Open">05ca8957db971b00677d3437b99619b0</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">50da8557db971b00677d3437b9961929</condition>
+        <from display_value="Set Open">05ca8957db971b00677d3437b99619b0</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:37:15</sys_created_on>
+        <sys_id>730b4d57db971b00677d3437b9961906</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:37:15</sys_updated_on>
+        <to display_value="Wait for Work In Progress">a7fac557db971b00677d3437b99619f1</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">1b4b4157db971b00677d3437b99619d5</condition>
+        <from display_value="Get Access Records">093b0957db971b00677d3437b9961948</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:58:16</sys_created_on>
+        <sys_id>73df4d97db971b00677d3437b99619fd</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:58:16</sys_updated_on>
+        <to display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">8300d1d7db971b00677d3437b99619ac</condition>
+        <from display_value="Set Complete">faef0597db971b00677d3437b99619d5</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:09</sys_created_on>
+        <sys_id>b0105997db971b00677d3437b996197a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:09</sys_updated_on>
+        <to display_value="End">ab9a8957db971b00677d3437b99619d6</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Failure">e2df0597db971b00677d3437b99619d5</condition>
+        <from display_value="Add User To Desktop Group">ddaf4197db971b00677d3437b99619a8</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:59:47</sys_created_on>
+        <sys_id>f1305d57db971b00677d3437b99619b3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:59:47</sys_updated_on>
+        <to display_value="Add Failure Note">b5105597db971b00677d3437b9961929</to>
+    </wf_transition>
+    <wf_transition action="INSERT_OR_UPDATE">
+        <condition display_value="Always">1a0b8957db971b00677d3437b99619b7</condition>
+        <from display_value="Wait for Work In Progress">a7fac557db971b00677d3437b99619f1</from>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:38:28</sys_created_on>
+        <sys_id>f95b8957db971b00677d3437b99619de</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:38:28</sys_updated_on>
+        <to display_value="Get Access Records">093b0957db971b00677d3437b9961948</to>
+    </wf_transition>
+    <wf_estimated_runtime_config action="INSERT_OR_UPDATE">
+        <estimated_run_time/>
+        <no_of_data_points>1</no_of_data_points>
+        <percentage_threshold_ert>20</percentage_threshold_ert>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-19 19:35:19</sys_created_on>
+        <sys_id>ab9a4d17db971b00677d3437b9961979</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:35:19</sys_updated_on>
+        <workflow_version display_value="CTX Desktop Provisioning">7a7a4957db971b00677d3437b99619ed</workflow_version>
+    </wf_estimated_runtime_config>
+    <wf_workflow_version action="update_multiple" query="workflow=6f9a4d17db971b00677d3437b9961979^sys_id!=7a7a4957db971b00677d3437b99619ed">
+        <published>false</published>
+    </wf_workflow_version>
+</record_update>

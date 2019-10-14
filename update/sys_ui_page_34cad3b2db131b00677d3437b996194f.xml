@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[function refreshOSConfigs(){
+	
+	if(confirm("Are you sure you want to refresh Applications?")){
+		var showResult = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer == 'true'){
+				alert('OS Configuration data has been refreshed successfully');
+			}else{
+				alert('Unable to refresh OS Configuration, please check the logs');
+			}
+		};
+		var ajax = new GlideAjax('CITSMCAdminTools');
+		ajax.addParam('sysparm_name','refreshOSConfigurations');
+		ajax.getXML(showResult);
+	}
+	
+}]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_refresh_os_configs.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	
+	<div class="col-xs-12">
+		<h1>Refresh OS Configurations</h1>
+		<p>Use this page to manually refresh the OS Configurations available through Citrix IT Service Management Connector</p>
+		<p>Please note that OS Configurations are refreshed hourly through a scheduled job.</p>
+		<div class="col-xs-6">
+			<button onclick="refreshOSConfigs()">Refresh OS Configurations</button>
+		</div>
+	</div>
+
+</j:jelly>]]></html>
+        <name>refresh_os_configs</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-18 16:48:07</sys_created_on>
+        <sys_id>34cad3b2db131b00677d3437b996194f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>refresh_os_configs</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_34cad3b2db131b00677d3437b996194f</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-18 16:48:07</sys_updated_on>
+    </sys_ui_page>
+</record_update>

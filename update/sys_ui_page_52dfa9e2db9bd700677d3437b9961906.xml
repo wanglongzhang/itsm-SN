@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[var app = angular.module('desktopProv',[]);
+app.controller('desktopProvCtrl',function($scope,$http,ajaxCall){
+
+	$scope.chosencConfig = '';
+	$scope.delgrp = '';
+	$scope.record = {};
+	$scope.deliveryGroups = [];
+	$scope.canEdit = true;
+	$scope.state = 'active-container';
+	
+	var getParameterValue = function(name) {
+		
+		var url = document.URL.parseQuery();
+		
+		if (url[name]) {			
+			return decodeURI(url[name]);			
+		}else{			
+			return;			
+		}		
+	};	
+	
+	var addDeliveryGroups = function(deliveryGroup){
+		var option = document.createElement('option');
+		option.text = deliveryGroup;
+		option.value = deliveryGroup;
+		gel('delivery_group_list').innerHTML = '';
+		gel('delivery_group_list').add(option);
+		
+	};
+	var addContentToPage = function(answer){					
+		
+		var ritm;
+		try{			
+			$scope.record = JSON.parse(answer);		
+		
+			
+			var osConfigRequetsd = $scope.record.variables.os_config_requested.value;
+			
+			$scope.config_name = osConfigRequetsd.name;
+			$scope.configs = osConfigRequetsd.configs;			
+			
+			if($scope.record.state.value != 1){
+			
+				$scope.canEdit = false;
+				$scope.state = 'disabled-catalog';
+				
+				var access = $scope.record.access_given;
+				
+				if(access.length > 0){
+					addDeliveryGroups(access[0].desktop_group);
+				}							
+			}			
+
+		}catch(error){
+			jslog('Unable to load RITM',error);
+			window.location = "/sc_req_item.do?sys_id="+$scope.record.sys_id;
+		}
+	};
+	
+	var loadRITMAndVariables = function(ritm_sys_id,callback){				
+		var appAjax = new GlideAjax('CTXClientRequest');
+		appAjax.addParam('sysparm_name','getRITMAndVariables');
+		appAjax.addParam('sysparm_ritm_sys_id',ritm_sys_id);
+		appAjax.getXML(callback);				
+	};
+	
+	
+	
+	$scope.selectCatalog = function(config,dgrp){
+		if($scope.canEdit == false){
+			return;
+		}
+		$scope.chosencConfig = config;
+		$scope.chosenDGrp = dgrp;
+		var containers = document.getElementsByClassName('active-container');
+		
+		for(var i = 0;i < containers.length; i++){
+			containers[i].classList.remove('active-container-chosen');
+		}
+		
+		document.querySelector('[id="'+dgrp.Name+'_'+config.Name+'_'+config.Catalog.Name+'"]').classList.add('active-container-chosen');		
+		
+		addDeliveryGroups(dgrp.Name);
+	};
+	
+	var getAccessGroups = function(){
+		var accessRec = {
+			ritm:$scope.record.sys_id,
+			users:$scope.record.requested_for,
+			site_id:$scope.chosencConfig.SiteId,
+			desktop_group:$scope.chosenDGrp.Name,			
+		};
+		return [accessRec];
+	};
+	
+	$scope.submitUpdate = function(){
+		
+		
+		var callback = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			
+			var reloadForm = function(res){
+				window.location.reload();
+			};
+			
+			if(answer == 'true'){
+				var reqAjax = new GlideAjax('CTXClientRequest');
+				reqAjax.addParam('sysparm_name','updateRITMStateWorkInProgress');
+				reqAjax.addParam('sysparm_ritm_sys_id',$scope.record.sys_id);
+				reqAjax.getXML(reloadForm);
+			}
+			
+		};
+			
+		var accessRecords = getAccessGroups();
+		
+		var reqAjax = new GlideAjax('CTXClientRequest');
+		reqAjax.addParam('sysparm_name','insertAccessRecords');
+		reqAjax.addParam('sysparm_access_records',JSON.stringify(accessRecords));
+		reqAjax.getXML(callback);
+	};
+	
+	(function loadRequest(){
+		var ritm_sys_id = getParameterValue('sys_id');
+		ajaxCall.run(loadRITMAndVariables,ritm_sys_id).then(addContentToPage);
+	
+	})();
+});
+
+app.directive('machineCat',function(){
+	var html = gel("catalog_template").innerHTML;
+	html = html.substring(2, html.length-2);
+	return {
+		template:html,
+		
+		link: function($scope,$attr) {
+			$scope.congif = $attr.congif;
+		}
+	};
+});
+
+app.service('ajaxCall',function($q){
+		
+	this.run = function(ajaxFunc,input){
+		var deferred = $q.defer();
+		var callback = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			deferred.resolve(answer);
+		};
+		if(input){
+			ajaxFunc(input,callback);
+		}else{
+			ajaxFunc(callback);
+		}
+		
+		return deferred.promise;
+	};
+});]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_desktop_config_view.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.14/angular.min.js"></script>
+		<style>
+			.column{
+				width:50%;
+			}
+			html[data-doctype="true"] body[data-formname="ui_page_render"] {
+				padding:0;				
+			}
+			html[data-doctype="true"] body[data-formname="ui_page_render"] .navbar {
+				margin:0;
+			}
+			.body{
+				padding:0px;
+			}
+			
+			.no-padding{
+				padding:0;
+			}
+			
+			#title_bar{
+				height: 46px;	
+				font-size:13px;
+				color: #343D47;
+				padding:5px;
+				margin:0;
+				margin-bottom:20px;
+			}
+			
+			#ritm_title_label {
+				margin-bottom:0;
+			}
+			
+			.form_update{
+				float:right;
+			}
+			
+			#form_body{
+				padding-left:50px;
+				padding-right:80px;
+			}
+			
+			#fields_container{
+				margin-bottom:30px;
+			}
+			#fields_container,#left_column,#right_column{
+				padding-left:0;
+			}
+			
+			.section{
+				border-bottom: 2px solid #efefef;
+				margin-bottom: 20px;
+				padding-top:20px;
+				padding-bottom:20px;
+			
+			};
+			
+			.info-text{
+				font-size:11px;
+			}
+			
+			.config-label{
+				font-size:16px;
+			}
+			.active-container{
+			
+			}
+			.catalog-container{
+				min-height:220px;
+				width:220px;
+				border:1px solid #efefef;
+				border-radius:10px;
+				padding: 25px 25px 0 25px;
+				float:left;
+				margin-right:10px;
+			}
+			
+			.active-container:hover{
+				border:1px solid black;
+			}
+			
+			.active-container-chosen{
+				border:2px solid #5b9aff;
+			}
+			.active-container-chosen:hover{
+				border:2px solid #146eff;
+			}
+			
+			.catalog-info-line{
+				margin-bottom:0;
+			}
+			.catalog-info-label{
+				font-size:11px;
+				color:#b7b7b7;
+			}
+			.catalog-info-value{
+				font-size:11px;
+				font-weight:bold;
+			}
+			
+			#delivery_group_container{
+				margin-top:40px;
+				padding-left:0;
+			}
+			
+			#del-grp-label{
+				padding-right:30px;
+				text-align:left;
+			}
+			
+			.disabled-catalog{
+				background-color: #e6e8ea;
+				border-color: #bdc0c4;
+				color: #485563;
+			}
+		</style>
+		
+		<script id="catalog_template" type="html">
+			<div ng-repeat="dgrp in config.DesktopGroup">
+				<div class="catalog-container" ng-class="state" ng-click="selectCatalog(config,dgrp)" id="{{dgrp.Name+'_'+config.Name+'_'+config.Catalog.Name}}">
+					<p class="catalog-info-line config-label">{{dgrp.Name}}, {{config.Name}}</p>
+
+
+					<p class="catalog-info-line"><span class='catalog-info-label'>Machine Type</span>$[SP]$[SP]
+						<span class='catalog-info-value' ng-if="config.Catalog.SessionSupport == 'SingleSession'">Desktop OS</span>
+						<span class='catalog-info-value' ng-if="config.Catalog.SessionSupport != 'SingleSession'">Server OS</span>
+					</p>
+					<p class="catalog-info-line"><span class='catalog-info-label'>Provision method</span>$[SP]$[SP]<span class='catalog-info-value'>{{config.Catalog.ProvisioningType}}</span></p>
+					
+					<p class="catalog-info-line" ng-if="config.Catalog.Scope != null">
+						<span class='catalog-info-label'>Scope</span>$[SP]$[SP]
+						<span class='catalog-info-value'>{{config.Catalog.Scope}}</span>
+					</p>
+					<p class="catalog-info-line" ng-if="config.Catalog.Zone != null">
+						<span class='catalog-info-label'>Zone</span>$[SP]$[SP]
+						<span class='catalog-info-value'>{{config.Catalog.Zone}}</span>
+					</p>
+
+				</div>
+			</div>
+		</script>
+	</head>
+	<body ng-app="desktopProv" ng-controller="desktopProvCtrl" ng-cloak="">
+		<nav id="title_bar" class="title_bar navbar navbar-default ">
+			<div class="navbar-header col-xs-6">
+				<p id="ritm_title_label"><b>Requested Item</b></p>
+				<p>{{record.number}}</p>
+			</div>
+			<div class="navbar-right col-xs-6">
+				<button class='form_update form_action_button header action_context btn btn-default' ng-click="submitUpdate()" ng-show="canEdit">Update</button>
+			</div>
+		</nav>
+		
+		<div id="form_body"  class='col-xs-11'>
+
+			<div id="fields_container" class='col-sm-12'>
+
+				<div id="left_column" class='col-sm-6 column'>				
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">Number</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.number}}" class="form-control" readonly=""/>
+							</div>
+
+							<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+						</div>
+
+
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">Due Date</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.due_date}}" class="form-control" readonly=""/>
+							</div>
+						</div>
+						<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+					</form>			
+
+				</div>
+				<div id="right_column" class='col-sm-6 column'>				
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">State</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.state.displayValue}}" class="form-control" readonly=""/>
+							</div>
+							<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+						</div>
+
+					</form>		
+
+				</div>
+			</div>
+
+			
+			<!-- CONTENT -->
+
+			<div class="col-xs-12 section">
+				<p class='info-text'><b>Request a desktop</b></p>
+				<p class='info-text'>Select the machine catalog corresponding to the configuration.</p>
+			</div>
+			<div class="col-xs-12 section">
+				<p class='info-text'>Configuration requested</p>
+				<p class="config-label catalog-info-line">{{config_name}}</p>
+			
+			</div>
+			<div class="col-xs-12 section">
+				<p class='info-text'>Machine catalog(s)</p>
+				
+				<machine-cat config="{{config}}" ng-repeat="config in configs"></machine-cat>
+				
+				<div id="delivery_group_container" class="form-group col-xs-12">
+					<label id="del-grp-label" class="col-xs-12 control-label no-padding">
+						<span class="label-text">Delivery group to be added to</span>
+					</label>
+					<div class="col-xs-4 form-field input_controls no-padding">
+						<select id="delivery_group_list" class="form-control" ng-model="delgrp"  ng-readonly="!canEdit">
+							
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<div id="bottom-section" class="col-xs-12 ">
+				<button class="btn btn-default" ng-click="submitUpdate()" ng-show="canEdit">Update</button>
+			</div>
+		</div>		
+	</body>
+</j:jelly>]]></html>
+        <name>desktop_config_view</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:39:52</sys_created_on>
+        <sys_id>52dfa9e2db9bd700677d3437b9961906</sys_id>
+        <sys_mod_count>24</sys_mod_count>
+        <sys_name>desktop_config_view</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_52dfa9e2db9bd700677d3437b9961906</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-09-13 19:26:49</sys_updated_on>
+    </sys_ui_page>
+</record_update>

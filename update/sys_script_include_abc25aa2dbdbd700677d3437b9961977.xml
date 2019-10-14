@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXSrvcsCreds</api_name>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>CTXSrvcsCreds</name>
+        <script><![CDATA[var CTXSrvcsCreds = Class.create();
+CTXSrvcsCreds.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	
+	CUSTOMERID_API_ENDPOINT:gs.getProperty('x_cion_citrix_it_s.customer_api_url')+"/root/customers/current",
+	CONNECTOR_API_ENDPOINT:gs.getProperty('x_cion_citrix_it_s.api_url'),
+	CUSTOMERID_ERROR:"Error Obtaining customer ID(s)",
+	
+	/*********************************
+	Uses AuthToken to test client ID
+	and secret provided.
+	@return
+	- results of credential test
+	for ajax call
+ 		*********************************/
+	testCredentials:function(){
+		var logger = new Logger();
+		var client_id = this.getParameter('sysparm_client_id');
+		var client_secret = this.getParameter('sysparm_client_secret');
+		var authToken = new AuthToken();
+		var test = authToken.testCredentials(client_id,client_secret);
+		return test;
+	},
+	
+	testCustomerID:function(){
+		var customerId = this.getParameter('sysparm_customer_id');
+		var authToken = new AuthToken();
+		var test = authToken.testCustomerId(customerId);
+		return test;
+	},
+	
+	/*******************************
+	Decode token obtained from 
+	authentication.
+	@params:
+		token:encoded token string
+	********************************/
+	_decodeToken:function(token){
+		var logger = new Logger();
+		
+		try{
+			var base64Url = token.split('.')[1];
+			var base64 = base64Url.replace('-', '+').replace('_', '/');
+			var tokenString = gs.base64Decode(base64);
+			
+			var tokenObject = JSON.parse(tokenString);
+			return tokenObject;
+		}catch(err){
+			logger.logError('Unable to decode token ' + err);
+			return null;
+		}
+	},
+	
+	updateAPIUrlWithGeo:function(geo){
+		var logger = new Logger();		
+				
+		if(gs.nil(geo)){
+			logger.logError("Unable to update API URL");
+			return;
+		}
+		var url = gs.getMessage(this.CONNECTOR_API_ENDPOINT,geo);
+		
+		var adminTool = new CITSMCAdminTools();
+		adminTool.updateProperty('x_cion_citrix_it_s.api_url',url);						
+				
+	},
+	
+	updateCredentials:function(){
+		var logger = new Logger();		
+		
+		var client_id = this.getParameter('sysparm_client_id');
+		var client_secret = this.getParameter('sysparm_client_secret');
+		
+		var adminTool = new CITSMCAdminTools();
+		adminTool.updateProperty('x_cion_citrix_it_s.client_id',client_id);
+		adminTool.updateProperty("x_cion_citrix_it_s.client_secret",client_secret);
+				
+		return true;
+	},
+	
+	_addAuthenticationCustomerRecord:function(customerId,displayName,organizationId){
+		var logger = new Logger();
+		var authCustRec = new GlideRecord('x_cion_citrix_it_s_authenticated_customer_id');
+		authCustRec.setValue('display_name',displayName);
+		authCustRec.setValue('customer_id',customerId);
+		authCustRec.setValue('organization_id',organizationId);
+		authCustRec.insert();
+	},
+	
+	_checkCustomerAuthentication:function(customerId,displayName,organizationId){
+		var authCustRec = new GlideRecord('x_cion_citrix_it_s_authenticated_customer_id');
+		authCustRec.addQuery('display_name',displayName);
+		authCustRec.addQuery('customer_id',customerId);
+		authCustRec.addQuery('organization_id',organizationId);
+		authCustRec.query();
+		
+		if(authCustRec.next()){
+			return true;
+		}else{
+			return false;
+		}
+	},
+	
+	_handleCustomerAuthenticationRecord:function(customerId,displayName,organizationId){
+		if(!this._checkCustomerAuthentication(customerId,displayName,organizationId)){
+			this._addAuthenticationCustomerRecord(customerId,displayName,organizationId);
+		}
+	},
+	
+	updateCustomerId:function(){
+		var logger = new Logger();		
+		
+		var customer_id = this.getParameter('sysparm_customer_id');
+		var display_name = this.getParameter('sysparm_display_name');
+		var organization_id = this.getParameter('sysparm_organization_id');
+		var geo = this.getParameter('sysparm_geo');
+		
+		this._handleCustomerAuthenticationRecord(customer_id,display_name,organization_id);
+		
+		var adminTool = new CITSMCAdminTools();
+		adminTool.updateProperty("x_cion_citrix_it_s.customer_id",customer_id);
+		
+		this.updateAPIUrlWithGeo(geo);
+		
+		return true;
+	},		
+		
+	getCustomerID:function(){
+		var logger = new Logger();
+		
+		var auth = new AuthToken();
+		var token = auth.getToken();
+		
+		if(!gs.nil(token)){
+			var rest = new RESTRequest();
+			
+			var headers = {
+				"Authorization":"CWSAuth bearer="+token
+			};
+			
+			var endpoint = this.CUSTOMERID_API_ENDPOINT;
+			var customerIDResponse = rest.get(endpoint,headers);
+			
+			try{
+				
+				var customersObj = JSON.parse(customerIDResponse);
+				var customerList = customersObj.items;
+				var customers = [];
+				var customer;
+				
+				for(var i = 0;i < customerList.length; i++){
+					if(!gs.nil(customerList[i].name)&&!gs.nil(customerList[i].displayName)&&!gs.nil(customerList[i].orgId)){
+						customer = {
+							customer_id:customerList[i].name,
+							display_name: customerList[i].displayName,
+							organization_id: customerList[i].orgId,
+							geo:customerList[i].geo
+						};
+						customers.push(customer);
+					}
+				}
+				
+				return JSON.stringify(customers);
+			}catch(error){
+				logger.logError(customerIDResponse);
+				return this.CUSTOMERID_ERROR;
+			}
+		
+		}
+			
+	},
+	
+	
+	type: 'CTXSrvcsCreds'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:57:34</sys_created_on>
+        <sys_id>abc25aa2dbdbd700677d3437b9961977</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>CTXSrvcsCreds</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_abc25aa2dbdbd700677d3437b9961977</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 14:19:50</sys_updated_on>
+    </sys_script_include>
+</record_update>

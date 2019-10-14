@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXADGroup</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXADGroup</name>
+        <script><![CDATA[var CTXADGroup = Class.create();
+CTXADGroup.prototype = {
+    initialize: function() {		
+		
+    },
+	
+	createGroup:function(name){		
+		var adGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_ad_groups');
+		adGrp.setValue('name',name);
+		return adGrp.insert();
+	},
+	
+	getGroupByName:function(name){
+		var adGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_ad_groups');
+		adGrp.addQuery('name',name);
+		adGrp.query();
+		
+		return (adGrp.next())?adGrp:null;						
+	},
+	
+	getGroupById:function(sys_id){
+		var adGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_ad_groups');
+		adGrp.get(sys_id);	
+		
+		return (adGrp.isValidRecord())?adGrp:null;	
+	},
+	
+	getGroupNamesBySysIds:function(sys_ids){
+		var names = [];
+		var adGrp;
+		
+		for(var i = 0; i < sys_ids.length; i++){
+			adGrp = this.getGroupById(sys_ids[i]);
+			
+			if(!gs.nil(adGrp)){
+				names.push(adGrp.getValue('name'));
+			}
+		}
+		return names;
+	},
+	
+	_updateDomain:function(domain){
+		var currentDomain = gs.getProperty('x_cion_citrix_it_s.user_domain');
+		
+		if(gs.nil(currentDomain)){
+			var adminTool = new CITSMCAdminTools();
+			adminTool.updateProperty('x_cion_citrix_it_s.user_domain',domain);
+		}
+	},
+	
+	_proccessDomainFromADGroup:function(adGroupString){
+		
+		var arr = adGroupString.split("\\");
+		var object = {};
+		
+		if(arr.length == 2){
+			object = {
+				domain: arr[0],
+				group: arr[1]
+			};
+			
+			this._updateDomain(object.domain);
+		}
+		
+		return object.group;
+	},
+	
+	processADGroups:function(adGroups){
+		var logger = new Logger();
+		
+		if(gs.nil(adGroups)){
+			return null;
+		}
+		var adGrpsSysIds = '';
+		
+		var adGrp;
+		var adGrpSysId;
+		
+		var adGroupName;
+		
+		for(var i = 0; i < adGroups.length; i++){
+			
+			if(gs.nil(adGroups[i])){
+				continue;
+			}
+			
+			if(adGroups[i].indexOf("\\") > 0){
+				adGroupName = this._proccessDomainFromADGroup(adGroups[i]);
+			}else{
+				adGroupName = adGroups[i];
+			}
+			
+			adGrp = this.getGroupByName(adGroupName);
+			adGrpSysId = (gs.nil(adGrp))? this.createGroup(adGroupName):adGrp.getValue('sys_id');
+			
+			adGrpsSysIds += (adGrpsSysIds == '')? adGrpSysId:","+adGrpSysId;
+		}
+		return adGrpsSysIds;
+	},
+
+    type: 'CTXADGroup'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 21:02:02</sys_created_on>
+        <sys_id>78c98f22db1fd700677d3437b9961914</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>CTXADGroup</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_78c98f22db1fd700677d3437b9961914</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 14:39:57</sys_updated_on>
+    </sys_script_include>
+</record_update>

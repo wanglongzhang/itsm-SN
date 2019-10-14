@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 20:27:55</sys_created_on>
+        <sys_id>ee73cfaedbdbd700677d3437b996199e</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>x_cion_citrix_it_s_citrix_itsm_machine_catalogs.x_cion_citrix_it_s.ctx_itsm_admin</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_security_acl display_value="x_cion_citrix_it_s_citrix_itsm_machine_catalogs">a273cfaedbdbd700677d3437b996199e</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_ee73cfaedbdbd700677d3437b996199e</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-17 20:51:41</sys_updated_on>
+        <sys_user_role display_value="x_cion_citrix_it_s.ctx_itsm_admin" name="x_cion_citrix_it_s.ctx_itsm_admin">3f0deda2db9bd700677d3437b99619ea</sys_user_role>
+        <transaction_id/>
+    </sys_security_acl_role>
+</record_update>

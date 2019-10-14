@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CITSMCAdminTools</api_name>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>CITSMCAdminTools</name>
+        <script><![CDATA[var CITSMCAdminTools = Class.create();
+CITSMCAdminTools.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	DEFAULT_CUSTOMER_ID:"root",
+	
+	updateProperty:function(property,value){
+		var logger = new Logger();
+		
+		var prop = new GlideRecord('sys_properties');
+		prop.addQuery('name',property);
+		prop.query();
+		
+		if(prop.next()){
+			prop.setValue('value',value);
+			prop.update();
+		}
+		
+	},
+	
+	clearTable:function(table){
+		var rec = new GlideRecord(table);
+		rec.deleteMultiple();
+	},
+	resetPlugin:function(){
+		var logger = new Logger();				
+		
+		try{
+			
+			this.clearTable('x_cion_citrix_it_s_authenticated_customer_id');
+			this.clearTable('x_cion_citrix_it_s_security_token');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_access_given');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_ad_groups');
+			this.clearTable('x_cion_citrix_it_s_ctx_applications');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_desktop_group');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_machine_catalogs');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+			this.clearTable('x_cion_citrix_it_s_citrix_itsm_sites');												
+			
+			
+			this.updateProperty('x_cion_citrix_it_s.customer_id',this.DEFAULT_CUSTOMER_ID);
+			this.updateProperty('x_cion_citrix_it_s.client_id','');
+			this.updateProperty('x_cion_citrix_it_s.client_secret','');	
+			this.updateProperty('x_cion_citrix_it_s.user_domain','');
+			
+			return 'true';
+		}catch(err){
+			logger.log("Unable to reset Citrix IT Service Management Connector Plugin");
+			return 'false';
+		}
+		
+	},
+	
+	refreshOSConfigurations:function(){				
+		var logger = new Logger();
+		try{
+			
+			var osConfigUtil = new CTXOSConfiguration();
+			osConfigUtil.refreshAvailableOSConfigurations();
+			return 'true';
+		}catch(err){
+			logger.logError("Unable to refresh OS configurations");
+			logger.logError(err);
+			return 'false';
+		}
+	},
+	
+	
+	refreshApplications:function(){
+		var logger = new Logger();
+		try{
+			
+			var appUtil = new CTXApplication();
+			appUtil.refreshApplications();
+			return 'true';
+		}catch(err){
+			logger.logError("Unable to refresh applications");
+			logger.logError(err);
+			return 'false';
+		}
+	},
+	
+	type: 'CITSMCAdminTools'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:49:38</sys_created_on>
+        <sys_id>50319662dbdbd700677d3437b99619f9</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>CITSMCAdminTools</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_50319662dbdbd700677d3437b99619f9</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 21:23:59</sys_updated_on>
+    </sys_script_include>
+</record_update>

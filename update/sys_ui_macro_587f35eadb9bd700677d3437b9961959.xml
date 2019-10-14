@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_macro">
+    <sys_ui_macro action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>general</category>
+        <description/>
+        <media_type/>
+        <name>session_loader</name>
+        <scoped_name>x_cion_citrix_it_s_session_loader</scoped_name>
+        <sys_class_name>sys_ui_macro</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 15:31:22</sys_created_on>
+        <sys_id>587f35eadb9bd700677d3437b9961959</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>session_loader</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_macro_587f35eadb9bd700677d3437b9961959</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-26 19:12:33</sys_updated_on>
+        <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<script>
+		addLoadEvent(function() {
+		
+			var sessions = {};
+			
+			/**
+			Add session html element to screen
+			**/
+			var addSessionElement = function(sessionElement){				
+				document.getElementById('sessionList').appendChild(sessionElement);
+			};
+		
+			/**
+			Create link for applications in session
+			**/
+			var createApplicationLink = function(apps){
+				return apps.length + " application(s)";
+			};
+			
+			/**
+			Create html element for given session
+			**/
+			var createSessionElement = function(session,sessionIndex){
+				
+				var uniqueId = session.SessionKey;
+				var status = session.SessionState;
+				var type = session.SessionType;
+				var apps = session.ApplicationsInUse;
+		
+				var template = document.createElement('html');
+				template.innerHTML = document.getElementById('session_template').innerHTML;
+				
+				template.querySelector('.radio-input').id = uniqueId;
+				template.querySelector('.session-index').setAttribute('for',uniqueId);
+		
+				var sessionMessage = document.createElement('span');
+				sessionMessage.innerHTML = 'Session ' + sessionIndex + '$[SP]';
+				
+				template.querySelector('.session-index').insertBefore(sessionMessage,template.querySelector('.session-index').childNodes[0]);
+				
+		
+				if(status == 'Disconnected'){
+					template.querySelector('.session-status-dot').className += " session-disconnected";
+					template.querySelector('.session-status').innerHTML = status;
+					
+		
+				}else if(status == 'Active'){
+					template.querySelector('.session-status-dot').className += " session-connected";
+					template.querySelector('.session-status').innerHTML = session.StartTime + " | " + status;
+			
+				}
+				
+				if(type == "Desktop"){					
+					template.querySelector('.app-session').style.display = "none";
+			
+				}else if(type == 'Application'){
+					template.querySelector('.desktop-session').style.display = "none";					
+					
+					var appLink = createApplicationLink(apps);
+					template.querySelector('.app-session').innerHTML = appLink;
+					template.querySelector('.app-session').setAttribute('apps',JSON.stringify(apps));
+				}
+		
+				template.querySelector('.session-launcher').innerHTML = session.LaunchedViaHostName;
+		
+				return template;
+			};
+
+			/**
+			Process Ajax reponse for get session API call
+			**/
+			var processSessions = function(response){
+				var answer = response.responseXML.documentElement.getAttribute('answer');		
+
+				try{
+					var sessionArr = JSON.parse(answer);
+					document.getElementById('loading_icon').style.display = 'none';
+				
+		
+					if(sessionArr == null || sessionArr.length &lt;= 0){
+						document.getElementById('loading_icon').style.display = 'none';
+						document.getElementById('unable-to-load').classList.remove('hide');
+						return;
+					}
+					var sessionElement;
+					for(var i = 0; i &lt; sessionArr.length; i++){
+						sessionElement = createSessionElement(sessionArr[i],i+1);
+						addSessionElement(sessionElement);
+						sessions[sessionArr[i].SessionKey] = sessionArr[i];
+					}
+					
+					Array.from(document.getElementsByClassName("radio-label")).forEach(function(element){
+						element.addEventListener('click',function(e){							
+							e = e || window.event;
+							var target = e.target;							
+							var sessionId = target.getAttribute('for');
+							var sessionObj = sessions[sessionId];
+							g_form.setValue('chosen_session',JSON.stringify(sessionObj));
+						});		
+					});
+		
+					
+					Array.from(document.getElementsByClassName("app-session")).forEach(function(element){
+						element.addEventListener('click',function(e){							
+							e = e || window.event;
+							var target = e.target;							
+							var apps = target.getAttribute('apps');
+							apps = JSON.parse(apps);
+							
+							var description = apps.length + " applications are running on this session";
+
+							var modalDialog = new GlideModal("x_cion_citrix_it_s_application_modal");
+							modalDialog.setTitle("Runnign applications");				
+							modalDialog.setPreference('apps',apps);	
+							modalDialog.setPreference('description',description);							
+							modalDialog.setSize(700, 800);
+							modalDialog.render();
+		
+						});		
+					});
+					
+				}catch(error){
+					g_form.addErrorMessage('Unable to load sessions');
+					jslog(error);
+				}
+			};
+			//Check if in Requested Item			
+			var checkInRequestedItem = function(){				
+				return g_form.getTableName() == 'sc_req_item';
+			};
+		
+			/**
+			Loads user's sessiosn by makign call to 
+			session API
+			**/
+			var loadSessions = function (){
+				
+				var userName = g_user.userName;
+				var fullName = g_user.getFullName();
+				
+				gel(user_full_name).innerHTML = fullName;
+		
+				var sessionAjax = new GlideAjax('CTXClientUserSession');
+				sessionAjax.addParam('sysparm_name','getUserSessions');	
+				sessionAjax.addParam('sysparm_username',userName);
+				sessionAjax.getXML(processSessions);
+			};
+		
+			if(!checkInRequestedItem()){
+				loadSessions();
+			}	
+			
+		});
+	</script>
+	<style>
+		.header-bar{
+			padding-left:0;
+		}
+		#user_full_name{
+			font-weight:bold;
+		}
+		
+		.session{
+			margin-bottom:20px;
+		}
+		
+		.session-info-text{
+			font-size:11px;
+			padding:0;
+			margin:0;
+		}
+		
+		.session-index{
+			font-weight:bold;
+		}
+		.session-info{
+			padding-left:32px;
+		}
+		
+		.session-connected{
+			background-color:#50e568;
+		}
+		.session-disconnected{
+			background-color:#ffee37;
+		}
+		.session-status-dot{
+			height: 13px;
+			width: 13px;
+			border-radius: 50%;
+			display: inline-block;	
+			vertical-align:middle;
+		}
+		
+		.session-launched-via{
+			color:#bdbfc1;
+		}
+		
+		.session-launcher{
+			color:black;
+			font-weight:bold;
+		}
+		
+		.no-pad-left{
+			padding-left:0 !important;
+		}
+		.no-padding{
+			padding:0 !important;
+		}
+		
+		.hide{
+			display:none;
+		}
+	</style>
+	
+	<script id="session_template" type="text/html">
+		<div class="col-xs-12 session no-pad-left">
+				
+			<span class="input-group-radio">									
+				<input id="" type="radio" class="radio radio-input" name="radio-input"></input>
+				<label for="" style="" class="radio-label session-index no-padding">
+					<span class="session-status-dot"></span>
+				</label>
+
+			</span>
+			<div class="col-xs-12 session-info">
+				<p class="session-status session-info-text"></p>
+				<p class="session-launched-via session-info-text">Launched via $[SP]<span class="session-launcher"></span></p>
+				<a href="#" class="session-type session-info-text app-session"></a>
+				<p class="session-type session-info-text desktop-session">Desktop Session</p>
+			</div>
+		</div>
+	</script>
+	
+	<div id="content">
+		<div class="col-xs-12 header-bar">
+			<p>All Sessions for $[SP]<span id="user_full_name"></span></p>
+		</div>
+		<div id='sessionList' class="col-xs-12 session-list no-pad-left">
+			<img id="loading_icon" src="loading_status_icon.gif" width="26" height="26" class="status_icon"/>	
+			<p id="unable-to-load" class="hide">No sessions found for user</p>
+		</div>
+	</div>
+	
+	
+</j:jelly>]]></xml>
+    </sys_ui_macro>
+</record_update>

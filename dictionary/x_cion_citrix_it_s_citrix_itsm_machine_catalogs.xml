@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Citrix ITSM Machine Catalogs" max_length="40" name="x_cion_citrix_it_s_citrix_itsm_machine_catalogs" type="collection">
+        <element label="Minimum Functional Level" max_length="100" name="minimum_functional_level" type="string"/>
+        <element display="true" label="Name" max_length="100" name="name" type="string"/>
+        <element label="Provisioning Type" max_length="100" name="provisioning_type" type="string"/>
+        <element label="Scopes" max_length="100" name="scopes" type="string"/>
+        <element label="Session Support" max_length="100" name="session_support" type="string"/>
+        <element label="Zone Name" max_length="100" name="zone_name" type="string"/>
+    </element>
+</database>

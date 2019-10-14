@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXOSConfiguration</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXOSConfiguration</name>
+        <script><![CDATA[var CTXOSConfiguration = Class.create();
+CTXOSConfiguration.prototype = {
+    initialize: function() {
+
+	},
+	
+	
+	hasOSConfiguration:function(){
+		var os = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+		os.query();
+		
+		return (os.getRowCount() == 0)? false:true;
+	},
+	
+	/********************************************
+	Creates record os available OS Configuration
+	@params:
+		osConfigObject - JSON object containing
+		all data and elements of OS configuration.
+	@return:
+		sys_id of inserted OS Configuration record.
+	********************************************/
+	createOSConfiguration:function(osConfigObject){
+		
+		var logger = new Logger();
+		
+		var name = osConfigObject.Name;
+		
+		var deskGrpUtil = new CTXDesktopGroup();		
+		var desktopGroupSysIds = deskGrpUtil.processDesktopGroups([osConfigObject.DesktopGroup]);
+		
+		var machCatUtil = new CTXMachineCatalog();
+		var catalogSysId  = machCatUtil.processCatalog(osConfigObject.Catalog);
+		
+		var siteUtil = new CTXSite();
+		var siteSysId = siteUtil.processSite(osConfigObject.SiteName,osConfigObject.SiteId);
+		
+		var osConfig = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+		osConfig.setValue('name',name);
+		osConfig.setValue('desktop_groups',desktopGroupSysIds);
+		osConfig.setValue('machine_catalog',catalogSysId);
+		osConfig.setValue('site',siteSysId);
+		osConfig.insert();
+	},
+	
+	updateOSConfiguration:function(configRecord,osConfigObject){
+		
+		var name = osConfigObject.Name;
+		
+		var deskGrpUtil = new CTXDesktopGroup();		
+		var desktopGroupSysIds = deskGrpUtil.processDesktopGroups([osConfigObject.DesktopGroup]);				
+		
+		var machCatUtil = new CTXMachineCatalog();
+		var catalogSysId  = machCatUtil.processCatalog(osConfigObject.Catalog);
+		
+		var siteUtil = new CTXSite();
+		var siteSysId = siteUtil.processSite(osConfigObject.SiteName,osConfigObject.SiteId);
+		
+		configRecord.setValue('desktop_groups',desktopGroupSysIds);
+		configRecord.setValue('machine_catalog',catalogSysId);
+		configRecord.setValue('site',siteSysId);
+		
+		configRecord.update();
+	},
+	
+	/********************************************
+	Gets OS Configuration record by name, catalog
+	name and site id
+	@params:
+		name - name of OS Congifuration	
+		catalogName - name of Machine Catalog
+		siteId - Site ID
+	@return:
+		GlideRecord of available OS Configuration.
+		null when not found.
+	********************************************/
+	getOSConfigByNameCatalogSite:function(name,catalogName,siteId){
+		
+		var osConfig = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+		osConfig.addQuery('name',name);
+		osConfig.addQuery('machine_catalog.name',catalogName);
+		osConfig.addQuery('site.site_id',siteId);
+		osConfig.query();
+		
+		return (osConfig.next())? osConfig:null;
+	},
+	
+	getOSConfigsByName:function(name){
+		
+		var osConfig = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+		osConfig.addQuery('name',name);		
+		osConfig.query();
+		
+		var records = [];
+		while(osConfig.next()){
+			records.push({
+				name:osConfig.getValue('name'),
+				machine_catalog: osConfig.getValue('machine_catalog'),
+				desktop_groups: osConfig.getValue('desktop_groups'),
+				site: osConfig.getValue('site')				
+			});
+		}
+		
+		return records;
+	},
+	
+	getOSConfigBySysId:function(sys_id){
+		
+		var osConfig = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_os_configurations');
+		osConfig.get(sys_id);
+		
+		return (osConfig.isValidRecord())? osConfig:null;
+	},
+	
+	refreshAvailableOSConfigurations:function(){
+		
+		var desktopProvisionUtil = new CTXDesktopProvision();
+	
+		var osConfigs = desktopProvisionUtil.getAvailableConfigs();	
+		
+		if(gs.nil(osConfigs)){
+			return false;
+		}
+		
+		var currentConfig;
+		for(var i = 0; i < osConfigs.length; i++){
+
+			currentConfig = this.getOSConfigByNameCatalogSite(osConfigs[i].Name,osConfigs[i].Catalog.Name,osConfigs[i].SiteId);
+
+			if(gs.nil(currentConfig)){
+
+				this.createOSConfiguration(osConfigs[i]);
+			}else{
+				this.updateOSConfiguration(currentConfig,osConfigs[i]);
+			}
+		}
+		return true;
+	},
+	
+	getOSConfigObject: function(name){
+		if(gs.nil(name)){
+			return null;
+		}
+		
+		var osCongifRecords = this.getOSConfigsByName(name);
+		var osCongifRecord;
+		var osConfigs = {name:name, configs:[]};
+		var osConfigObj;
+		for(var index = 0; index < osCongifRecords.length; index++){
+			osCongifRecord = osCongifRecords[index];
+		
+			osConfigObj = {
+				Name:osCongifRecord.name,
+			};
+
+			var catalogSysId = osCongifRecord.machine_catalog;
+
+			if(!gs.nil(catalogSysId)){
+
+				var catUtil = new CTXMachineCatalog();
+				var catalog = catUtil.getCatalogObject(catalogSysId);
+				osConfigObj.Catalog = catalog;
+
+			}
+
+			var deskGrpSysIds = osCongifRecord.desktop_groups;
+
+			if(!gs.nil(deskGrpSysIds)){
+				deskGrpSysIds = deskGrpSysIds.split(',');
+				osConfigObj.DesktopGroup = [];
+				var deskGrpUtil = new CTXDesktopGroup();
+
+				for(var i = 0; i < deskGrpSysIds.length; i++){
+					osConfigObj.DesktopGroup.push(deskGrpUtil.getDesktopGroupObject(deskGrpSysIds[i]));
+				}
+
+			}
+
+			var siteSysId = osCongifRecord.site;
+			if(!gs.nil(siteSysId)){
+				var siteUtil = new CTXSite();
+				var site = siteUtil.getSiteById(siteSysId);
+				osConfigObj.SiteId = site.getValue('site_id');
+				osConfigObj.SiteName = site.getValue('site_name');
+			}
+			
+			osConfigs.configs.push(osConfigObj);
+		}
+		return osConfigs;
+	},
+
+    type: 'CTXOSConfiguration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-18 01:44:34</sys_created_on>
+        <sys_id>8733ccbedb1fd700677d3437b996198a</sys_id>
+        <sys_mod_count>29</sys_mod_count>
+        <sys_name>CTXOSConfiguration</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_8733ccbedb1fd700677d3437b996198a</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 18:03:00</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update node_type="sys_portal_page" unload_date="2019-10-14 08:49:11">
+    <sys_portal_page action="INSERT_OR_UPDATE">
+        <layout/>
+        <order>4000</order>
+        <read_roles>x_cion_citrix_it_s.ctx_itsm_admin</read_roles>
+        <roles>x_cion_citrix_it_s.ctx_itsm_admin</roles>
+        <selectable>true</selectable>
+        <sys_class_name>sys_portal_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-08-16 23:07:36</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>ae970e14dbc0a700677d3437b99619e6</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>Citrix IT Service Management Connector Services</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_portal_page_ae970e14dbc0a700677d3437b99619e6</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 23:24:20</sys_updated_on>
+        <title>Citrix IT Service Management Connector Services</title>
+        <user/>
+        <view>citrix_it_service_management_connector</view>
+        <related_items_node>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone1</dropzone>
+                <offset>0</offset>
+                <page display_value="Citrix IT Service Management Connector Services">ae970e14dbc0a700677d3437b99619e6</page>
+                <summary/>
+                <sys_created_by>sebastiang</sys_created_by>
+                <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                <sys_id>f05a0a54dbc0a700677d3437b9961984</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>sebastiang</sys_updated_by>
+                <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>705a0a54dbc0a700677d3437b9961987</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>ae970e14dbc0a700677d3437b99619e6</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>745a0a54dbc0a700677d3437b9961984</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>c7a6fd66db9bd700677d3437b9961907</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>785a0a54dbc0a700677d3437b9961986</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>category</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>catalog_view</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>7c5a0a54dbc0a700677d3437b9961986</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>catalog_Citrix_IT_Service_Management_Connector_Services</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>render_title</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>f05a0a54dbc0a700677d3437b9961985</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>false</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>f05a0a54dbc0a700677d3437b9961986</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>XenApp and XenDesktop [Citrix IT Service Management Connector Services]</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>catalog</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>f45a0a54dbc0a700677d3437b9961985</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>7289913ddb67db00677d3437b9961916</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>macro</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>f85a0a54dbc0a700677d3437b9961984</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>sc_catalog_homepage_category_item</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title_link_class</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>f85a0a54dbc0a700677d3437b9961985</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>category_title_link</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>fc5a0a54dbc0a700677d3437b9961984</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>com.glideapp.servicecatalog.RenderCategory</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title_link</name>
+                        <portal_section display_value="Created 2018-08-16 16:18:58">f05a0a54dbc0a700677d3437b9961984</portal_section>
+                        <sys_created_by>sebastiang</sys_created_by>
+                        <sys_created_on>2018-08-16 23:18:58</sys_created_on>
+                        <sys_id>fc5a0a54dbc0a700677d3437b9961985</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>sebastiang</sys_updated_by>
+                        <sys_updated_on>2018-08-16 23:18:58</sys_updated_on>
+                        <value>com.glideapp.servicecatalog_category_view.do?v=1&amp;amp;sysparm_parent=c7a6fd66db9bd700677d3437b9961907&amp;amp;sysparm_catalog=7289913ddb67db00677d3437b9961916&amp;amp;sysparm_catalog_view=catalog_Citrix_IT_Service_Management_Connector_Services</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+        </related_items_node>
+    </sys_portal_page>
+</record_update>

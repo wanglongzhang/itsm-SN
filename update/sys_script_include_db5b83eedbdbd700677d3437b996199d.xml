@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXDesktopGroup</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXDesktopGroup</name>
+        <script><![CDATA[var CTXDesktopGroup = Class.create();
+CTXDesktopGroup.prototype = {
+    initialize: function() {
+    
+	},
+				
+	createGroup:function(groupObject){
+		var logger = new Logger();		
+		
+		var name = groupObject.Name;
+		
+		var adGrpUtil = new CTXADGroup();		
+		var adGroupSysIds = adGrpUtil.processADGroups(groupObject.ADGroups);
+				
+		var deskGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_desktop_group');
+		deskGrp.setValue('name',name);
+		deskGrp.setValue('ad_groups',adGroupSysIds);	
+		
+		return deskGrp.insert();
+	},
+	
+	getGroupByName:function(name){
+		var deskGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_desktop_group');
+		deskGrp.addQuery('name',name);
+		deskGrp.query();
+		
+		return (deskGrp.next())?deskGrp:null;						
+	},
+	
+	getGroupById:function(sys_id){
+		var deskGrp = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_desktop_group');
+		deskGrp.get(sys_id);	
+		
+		return (deskGrp.isValidRecord())?deskGrp:null;	
+	},
+	
+	
+	getDesktopGroupObject:function(sys_id){
+		var logger = new Logger();
+		var deskGrpRecord = this.getGroupById(sys_id);
+		var appUtil = new CTXApplication();
+		
+		if(gs.nil(deskGrpRecord)){
+			return null;
+		}
+		
+		var deskGrp = {
+			Name:deskGrpRecord.getValue('name'),
+		};
+		
+		var appsInDeskGrp = appUtil.getApplicationsByDesktopGroup(deskGrpRecord.getValue('sys_id'));
+		deskGrp.Applications = appsInDeskGrp;
+		
+		var adGroupsSysIds = deskGrpRecord.getValue('ad_groups');				
+		adGroupsSysIds = (!gs.nil(adGroupsSysIds))? adGroupsSysIds.split(','):[];
+			
+		var adGrpUtil = new CTXADGroup();								
+		deskGrp.ADGroups = adGrpUtil.getGroupNamesBySysIds(adGroupsSysIds);
+
+		return deskGrp;				 
+		
+	},
+	
+	updateGroup:function(grpRecord,field,value){
+		grpRecord.setValue(field,value);
+		grpRecord.update();		
+	},
+	
+	/********************************************
+	Checks if Desktop Group has been created. Creates
+	Desktop Group record if not.
+	@params:
+		deskGrpObject - JSON object containing
+		all data and elements of Desktop Group
+	@return:
+		returns sys_id of found/inserted record.
+	********************************************/
+	processDesktopGroups:function(deskGrpObjects){
+		var logger = new Logger();
+		
+		if(gs.nil(deskGrpObjects)){
+			return null;
+		}
+		
+		var desktopGroupsSysIds = '';
+		
+		var deskGrp;
+		var deskGrpSysId;
+		
+		var adGrpUtil = new CTXADGroup();		
+		var adGroupSysIds;
+		
+		for(var i = 0;i < deskGrpObjects.length; i++){
+			
+			deskGrp = this.getGroupByName(deskGrpObjects[i].Name);			
+			
+			if(gs.nil(deskGrp)){
+				deskGrpSysId = this.createGroup(deskGrpObjects[i]);
+			}else{
+				
+				if(!gs.nil(deskGrpObjects[i].ADGroups)){
+					adGroupSysIds = adGrpUtil.processADGroups(deskGrpObjects[i].ADGroups);
+					if(!gs.nil(adGroupSysIds)){
+						this.updateGroup(deskGrp,'ad_groups',adGroupSysIds);
+					}					
+				}
+				deskGrpSysId = deskGrp.getValue('sys_id');
+			}
+			
+			desktopGroupsSysIds += (desktopGroupsSysIds == '')? deskGrpSysId : "," + deskGrpSysId;			
+			
+		}
+		
+		return desktopGroupsSysIds;
+	},
+
+    type: 'CTXDesktopGroup'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 21:34:18</sys_created_on>
+        <sys_id>db5b83eedbdbd700677d3437b996199d</sys_id>
+        <sys_mod_count>31</sys_mod_count>
+        <sys_name>CTXDesktopGroup</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_db5b83eedbdbd700677d3437b996199d</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 20:35:22</sys_updated_on>
+    </sys_script_include>
+</record_update>

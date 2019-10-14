@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="catalog_ui_policy_action">
+    <catalog_ui_policy_action action="INSERT_OR_UPDATE">
+        <catalog_item display_value="Application Provisioning">741771a6db9bd700677d3437b99619a8</catalog_item>
+        <catalog_variable>IO:30be59bddb67db00677d3437b996196a</catalog_variable>
+        <cleared>false</cleared>
+        <disabled>true</disabled>
+        <field/>
+        <mandatory>ignore</mandatory>
+        <order/>
+        <sys_class_name>catalog_ui_policy_action</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-27 15:33:08</sys_created_on>
+        <sys_id>dbdf11fddb67db00677d3437b9961989</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>request_type</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>catalog_ui_policy_action_dbdf11fddb67db00677d3437b9961989</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-27 15:33:08</sys_updated_on>
+        <table/>
+        <ui_policy display_value="Hide Request Type">1c2f197ddb67db00677d3437b996193f</ui_policy>
+        <variable>request_type</variable>
+        <variable_set/>
+        <visible>false</visible>
+    </catalog_ui_policy_action>
+</record_update>

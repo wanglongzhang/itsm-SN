@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXSite</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXSite</name>
+        <script><![CDATA[var CTXSite = Class.create();
+CTXSite.prototype = {
+    initialize: function() {
+    },
+	
+	createSite:function(siteName,siteId){
+		
+		var site = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_sites');
+		site.setValue('site_name',siteName);
+		site.setValue('site_id',siteId);
+		return site.insert();		
+	},
+	
+	updateSite:function(siteRecord,siteName){
+		siteRecord.setValue('site_name',siteName);
+		siteRecord.update();
+		return siteRecord.getValue('sys_id');
+	},
+	getSiteByName:function(siteName){
+		
+		var site = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_sites');
+		site.addQuery('site_name',siteName);
+		site.query();
+		
+		return (site.next())?site:null;
+	},
+	
+	getSiteBySiteId:function(siteId){
+		
+		var site = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_sites');
+		site.addQuery('site_id',siteId);
+		site.query();
+		
+		return (site.next())?site:null;
+	},
+	
+	getSiteById:function(sys_id){
+		var site = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_sites');
+		site.get(sys_id);
+		return (site.isValidRecord())?site:null;
+	},
+	
+	processSite:function(siteName,siteId){
+		
+		if(gs.nil(siteName)||gs.nil(siteId)){
+			return null;
+		}
+		
+		var site = this.getSiteBySiteId(siteId);
+		
+		return (gs.nil(site))? this.createSite(siteName,siteId):this.updateSite(site,siteName);
+	},
+
+    type: 'CTXSite'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 22:59:32</sys_created_on>
+        <sys_id>e326afa6db1fd700677d3437b9961945</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>CTXSite</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_e326afa6db1fd700677d3437b9961945</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 18:09:55</sys_updated_on>
+    </sys_script_include>
+</record_update>

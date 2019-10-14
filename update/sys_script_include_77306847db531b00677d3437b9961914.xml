@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXAccess</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXAccess</name>
+        <script><![CDATA[var CTXAccess = Class.create();
+CTXAccess.prototype = {
+    initialize: function() {
+    },
+	
+	/****************************************
+	Create Access Given Record.
+	@params:
+		ritm - sys_id of ritm
+		users - Array of user sys_ids
+		desktopGroup - Name of Desktop group
+		adGroup - Name of AD Group		
+		site_id - Site ID
+	****************************************/
+	createAccessRecord:function(accessObject){
+		var access = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_access_given');
+		for(var field in accessObject){
+			access.setValue(field,accessObject[field]);
+		}		
+		access.insert();
+	},	
+	
+	
+	/****************************************
+	Gets all Access records related to given
+	ritm
+	@params:
+		ritm - sys_id of ritm
+	@return:
+		array of access records;
+	****************************************/
+	getAccessRecordData:function(ritm){
+		var access = new GlideRecord('x_cion_citrix_it_s_citrix_itsm_access_given');
+		access.addQuery('ritm',ritm);
+		access.query();
+		
+		var records = [];
+		var processedRec;
+		var users;
+		var userUtil = new CTXUserTools();
+		
+		while(access.next()){
+			processedRec = {
+				site_id:access.getValue('site_id'),
+				ad_group:access.getValue('ad_group'),
+				desktop_group:access.getValue('desktop_group')
+			};
+			users = access.getValue('users');
+			users = userUtil.getUsersWithAttributes(users,['sys_id','name']);
+			processedRec.users = users;
+			records.push(processedRec);
+		}
+		
+		
+		return records;
+		
+	},
+
+    type: 'CTXAccess'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-18 22:01:12</sys_created_on>
+        <sys_id>77306847db531b00677d3437b9961914</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>CTXAccess</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_77306847db531b00677d3437b9961914</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 15:09:38</sys_updated_on>
+    </sys_script_include>
+</record_update>

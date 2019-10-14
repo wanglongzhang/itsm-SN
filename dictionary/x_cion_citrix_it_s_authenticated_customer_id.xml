@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Authenticated Customer ID" max_length="40" name="x_cion_citrix_it_s_authenticated_customer_id" type="collection">
+        <element label="Customer ID" max_length="100" name="customer_id" type="string"/>
+        <element label="Display Name" max_length="100" name="display_name" type="string"/>
+        <element label="Organization ID" max_length="100" name="organization_id" type="string"/>
+    </element>
+</database>

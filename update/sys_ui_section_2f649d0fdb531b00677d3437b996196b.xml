@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="" section_id="2f649d0fdb531b00677d3437b996196b" sys_domain="global" table="x_cion_citrix_it_s_citrix_itsm_access_given" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>desktop_group</element>
+            <position>0</position>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:49:04</sys_created_on>
+            <sys_id>bc969d07db931b00677d3437b99619e4</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_cion_citrix_it_s_citrix_itsm_access_given" sys_domain="global" view="Default view">2f649d0fdb531b00677d3437b996196b</sys_ui_section>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:49:04</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>users</element>
+            <position>1</position>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:49:04</sys_created_on>
+            <sys_id>30969d07db931b00677d3437b99619e5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_cion_citrix_it_s_citrix_itsm_access_given" sys_domain="global" view="Default view">2f649d0fdb531b00677d3437b996196b</sys_ui_section>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:49:04</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>site_id</element>
+            <position>2</position>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:49:04</sys_created_on>
+            <sys_id>b0969d07db931b00677d3437b99619e5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_cion_citrix_it_s_citrix_itsm_access_given" sys_domain="global" view="Default view">2f649d0fdb531b00677d3437b996196b</sys_ui_section>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:49:04</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>ad_group</element>
+            <position>3</position>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:49:04</sys_created_on>
+            <sys_id>34969d07db931b00677d3437b99619e5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_cion_citrix_it_s_citrix_itsm_access_given" sys_domain="global" view="Default view">2f649d0fdb531b00677d3437b996196b</sys_ui_section>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:49:04</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>ritm</element>
+            <position>4</position>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:49:04</sys_created_on>
+            <sys_id>b4969d07db931b00677d3437b99619e5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_cion_citrix_it_s_citrix_itsm_access_given" sys_domain="global" view="Default view">2f649d0fdb531b00677d3437b996196b</sys_ui_section>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:49:04</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_cion_citrix_it_s_citrix_itsm_access_given</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-19 01:39:42</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>2f649d0fdb531b00677d3437b996196b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_cion_citrix_it_s_citrix_itsm_access_given</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+            <sys_update_name>sys_ui_section_2f649d0fdb531b00677d3437b996196b</sys_update_name>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-19 01:39:42</sys_updated_on>
+            <sys_user/>
+            <title>true</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

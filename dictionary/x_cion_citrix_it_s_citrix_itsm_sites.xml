@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Citrix ITSM Sites" max_length="40" name="x_cion_citrix_it_s_citrix_itsm_sites" type="collection">
+        <element label="Site ID" max_length="100" name="site_id" type="string"/>
+        <element display="true" label="Site Name" max_length="100" name="site_name" type="string"/>
+    </element>
+</database>

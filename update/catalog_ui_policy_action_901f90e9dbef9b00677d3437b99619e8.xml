@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="catalog_ui_policy_action">
+    <catalog_ui_policy_action action="INSERT_OR_UPDATE">
+        <catalog_item display_value="Request a Desktop">801dfde6db9bd700677d3437b996198e</catalog_item>
+        <catalog_variable>IO:dbde1af2dbdfd700677d3437b99619ee</catalog_variable>
+        <cleared>false</cleared>
+        <disabled>ignore</disabled>
+        <field/>
+        <mandatory>true</mandatory>
+        <order/>
+        <sys_class_name>catalog_ui_policy_action</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-26 16:11:28</sys_created_on>
+        <sys_id>901f90e9dbef9b00677d3437b99619e8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>os_config_requested</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>catalog_ui_policy_action_901f90e9dbef9b00677d3437b99619e8</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-26 16:11:28</sys_updated_on>
+        <table/>
+        <ui_policy display_value="Make Field Mandatory">3ffe10e9dbef9b00677d3437b996196e</ui_policy>
+        <variable>os_config_requested</variable>
+        <variable_set/>
+        <visible>ignore</visible>
+    </catalog_ui_policy_action>
+</record_update>

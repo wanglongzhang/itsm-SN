@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[var app = angular.module('connection',[]);
+
+app.controller('connectionCtrl',function($scope,$http,$q,status){
+	
+	$scope.title = "Workspace Automation Service Connection Status";
+	
+	$scope.customers = [];
+	
+	$scope.updateStatusIcon = function(customer,status){
+		var customerId = customer.customer_id;
+		gel(customerId).querySelector('[id="loading_icon"]').classList.add('hide');
+		gel(customerId).querySelector('[id="'+status+'_icon"]').classList.remove('hide');
+		
+		
+	};
+	
+	
+	
+	var markSuccess = function(customer,status){
+		
+		var customerId = customer.customer_id;
+		var statusObj = gel(customerId).querySelector('.status');
+		statusObj.classList.add('status-success');
+		$scope.updateStatusIcon(customer,'success');
+		
+	};
+	var markFailure = function(customer,status){
+		var customerId = customer.customer_id;
+		var statusObj = gel(customerId).querySelector('.status');
+		
+		statusObj.classList.add('status-failure');
+		$scope.updateStatusIcon(customer,'failure');
+	};
+	
+	
+	var checkDataStatus = function(customer,status){
+		
+		return function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer == 'true'){
+				markSuccess(customer,status);
+			}else{
+				markFailure(customer,status);
+			}
+		};		
+		
+	};
+	var refreshConnectorData = function(customer,status){
+		
+		var ajax = new GlideAjax('CTXClientRequest');
+		ajax.addParam('sysparm_name','refreshConnectorData');
+		ajax.getXML(checkDataStatus(customer,status));
+	};
+	
+	$scope.updateStatus = function(customer,status){				
+		
+		if(status == 'success'){
+			refreshConnectorData(customer,status);									
+			
+		}else if(status == 'failure'||status == 'no_answer'){
+			markFailure(customer,status);
+		}
+	};
+	
+	$http({
+		method:"GET",
+		url:"api/now/table/x_cion_citrix_it_s_authenticated_customer_id",
+		headers:{
+			"Accept":"application/json",
+			"X-UserToken":window.g_ck
+		}
+	}).then(function(response){
+		var records = response.data.result;
+		
+		$scope.customers = records;
+		status.getStatus($scope.customers[0],$scope.updateStatus);
+	});	
+});
+
+app.service('status',function($q){
+
+	this.getStatus = function(customer,updateStatus){
+		var deferred;
+		var status;
+		var returnStatus = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer == "TOKEN_SUCCESS"){				
+				status = "success";
+			}else if(answer == "TOKEN_FAILURE"){				
+				status = "failure";
+			}else{
+				status = "no_answer";
+			}
+			deferred.resolve();
+		};
+		
+		var sendAjax = function(){
+			deferred = $q.defer();
+			var authAjax = new GlideAjax('CTXSrvcsCreds');
+			authAjax.addParam('sysparm_name','testCustomerID');
+			authAjax.addParam('sysparm_customer_id',customer.customer_id);
+			authAjax.getXML(returnStatus);
+			return deferred.promise;
+		};
+		
+		var runCallback = function(){
+			updateStatus(customer,status);
+		};
+		
+		sendAjax().then(runCallback);
+		
+	};
+	
+});]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_connection_status.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.14/angular.min.js"></script>
+		<style>
+			
+			.content{
+				padding:20px 40px 0 40px; 
+			}
+			#title{
+				font-weight:bold;
+			}
+			#title_bar > .navbar-header{
+				padding-top:5px;
+			}
+			.header{
+				margin:10px 20px 40px 20px;
+			}
+			.customer-obj{
+				border: solid #E6E6E6 2px;		
+				margin-left:20px;				
+				min-height:150px;			
+				padding:0;
+			}
+			.status{
+				border-right:solid #E6E6E6 1px;	
+				min-height:150px;
+				background-color:#E6E6E6;
+				padding:0;
+				max-width:60px;
+			}
+			
+			.status-success{
+				background-color:#79C6B5;
+			}
+			.status-failure{
+				background-color:#F05050;
+			}
+			.status-no-answer{
+				background-color:#F7DC6F;
+			}
+			
+			.info-text{
+				margin-top:50px;
+			}
+			.cloud_button{
+				margin-top:50px;
+				margin-right:30px;
+				padding-left:10px;
+				padding-top:10px;
+			}
+			.goto-cloud-btn{
+				float:right;
+				border: none;
+				border-radius: 5px;
+				padding-left: 35px;
+				padding-right: 35px;				
+				font-size: 13px;
+			}
+			.status_icon{
+				margin-top:60px;
+				margin-left:15px;
+			}
+			.customer-obj{
+				position:relative;
+			}
+			
+			@media (max-width: 550px) {
+			
+				.status{
+					min-height:20px;
+					max-width:100%;
+				}
+				img.status_icon{
+					margin-top:10px;
+					margin-bottom:10px;				
+				}
+			
+				.cloud_button{
+					margin-top:0;
+				}
+			}
+		</style>
+	</head>
+	<body ng-app="connection" ng-controller='connectionCtrl'>
+		<nav id="title_bar" class="title_bar navbar navbar-default ">
+			<div class="navbar-header col-xs-6">
+				<p id="ritm_title_label"><b>Citrix IT Service Management Connector - Home</b></p>				
+			</div>
+			<div class="navbar-right col-xs-6">
+			
+			</div>
+		</nav>
+		<div class="col-sm-12 content">
+			<div class="col-sm-12 header">
+				<h2 id="title">Citrix IT Service Management Connector Connection Status</h2>
+			</div>
+
+
+			<div class="col-sm-12">
+				<div id="{{cust.customer_id}}" class="col-sm-11 col-xs-12 customer-obj" ng-repeat="cust in customers" ng-cloak="" >
+					<div class="col-md-1 col-sm-3 col-xs-12 status">
+						<img id="loading_icon" src="loading_status_icon.gif" width="26" height="26" class="status_icon"/>
+						<img id="failure_icon" src="no_connection_icon.png" width="26" height="26" class="status_icon hide"/>
+						<img id="success_icon" src="verify_white_icon.png" width="26" height="26" class="status_icon hide"/>
+					</div>
+					<div class="col-md-8 col-sm-9 col-xs-12 info">
+						<div class="col-md-4 col-sm-4 col-xs-12 info-text">
+							<b>Customer Name</b>
+							<p>{{cust.display_name}}</p>
+						</div>
+						<div class="col-md-4 col-sm-4 col-xs-12 info-text">
+							<b>Customer ID</b>
+							<p>{{cust.customer_id}}</p>
+						</div>
+						<div class="col-md-4 col-sm-4 col-xs-12 info-text">
+							<b>Organization ID</b>
+							<p>{{cust.organization_id}}</p>
+						</div>
+					</div>
+					<div class="cloud_button">
+						<a href="https://citrix.cloud.com/" target="_blank" class="btn btn-md btn-primary goto-cloud-btn">Go to Connector</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+		
+
+</j:jelly>]]></html>
+        <name>connection_status</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:25:17</sys_created_on>
+        <sys_id>528b4aeedb9bd700677d3437b9961909</sys_id>
+        <sys_mod_count>38</sys_mod_count>
+        <sys_name>connection_status</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_528b4aeedb9bd700677d3437b9961909</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 21:21:22</sys_updated_on>
+    </sys_ui_page>
+</record_update>

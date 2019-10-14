@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="ritm" label="RITM" language="en" table="x_cion_citrix_it_s_citrix_itsm_access_given">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>ritm</element>
+            <help/>
+            <hint/>
+            <label>RITM</label>
+            <language>en</language>
+            <name>x_cion_citrix_it_s_citrix_itsm_access_given</name>
+            <plural>RITMs</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-18 21:57:15</sys_created_on>
+            <sys_id>81812047db531b00677d3437b99619e9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>RITM</sys_name>
+            <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+            <sys_update_name>sys_documentation_x_cion_citrix_it_s_citrix_itsm_access_given_ritm_en</sys_update_name>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-18 21:57:15</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Citrix ITSM Desktop Group" max_length="40" name="x_cion_citrix_it_s_citrix_itsm_desktop_group" type="collection">
+        <element attributes="edge_encryption_enabled=true,no_sort=true,slushbucket_ref_no_expand=true" label="AD Groups" max_length="4000" name="ad_groups" reference="x_cion_citrix_it_s_citrix_itsm_ad_groups" type="glide_list"/>
+        <element label="Name" max_length="100" name="name" type="string"/>
+    </element>
+</database>

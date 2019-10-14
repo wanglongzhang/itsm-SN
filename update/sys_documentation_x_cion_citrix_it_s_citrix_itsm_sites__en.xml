@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="" label="Citrix ITSM Sites" language="en" table="x_cion_citrix_it_s_citrix_itsm_sites">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element/>
+            <help/>
+            <hint/>
+            <label>Citrix ITSM Sites</label>
+            <language>en</language>
+            <name>x_cion_citrix_it_s_citrix_itsm_sites</name>
+            <plural>Citrix ITSM Sites</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>sebastiang</sys_created_by>
+            <sys_created_on>2018-07-17 20:24:21</sys_created_on>
+            <sys_id>9ea2cbaedbdbd700677d3437b99619ac</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Citrix ITSM Sites</sys_name>
+            <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+            <sys_update_name>sys_documentation_x_cion_citrix_it_s_citrix_itsm_sites__en</sys_update_name>
+            <sys_updated_by>sebastiang</sys_updated_by>
+            <sys_updated_on>2018-07-17 20:24:21</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

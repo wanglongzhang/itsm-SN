@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[var app = angular.module('appProv',[]);
+app.controller('appProvCtrl',function($scope,$http,ajaxCall,$q){
+	
+	$scope.record = {};
+	$scope.canEdit = true;
+	$scope.deliveryGroups = [];
+	$scope.adGroups = {};
+	
+	var getParameterValue = function(name) {
+		
+		var url = document.URL.parseQuery();
+		
+		if (url[name]) {			
+			return decodeURI(url[name]);			
+		}else{			
+			return;			
+		}
+		
+	};	
+
+	
+	$scope.selectTab = function($event){
+		var tab = $event.currentTarget;
+		
+		var link = tab.querySelector("a");
+		var tabId = link.getAttribute('goto');
+		
+		var tabs = document.getElementsByClassName("tab-pane");
+		
+		for(var i = 0 ; i < tabs.length; i++){
+			if(tabId == tabs[i].id){
+				tabs[i].classList.add('active');
+			}else{
+				tabs[i].classList.remove('active');
+			}
+		}				
+	};
+	
+	var createNewDeliveryGroup = function(app, deliveryGroup){
+		var delGrp = {
+			Name:deliveryGroup.Name,
+			SiteName: app.SiteName,
+			SiteId: app.SiteId,
+			ADGroups:deliveryGroup.ADGroups,
+			Applications:deliveryGroup.Applications			
+		};
+		
+		return delGrp;
+	};
+	
+	
+	
+	/*****************************************
+	Takes chosen applications and orginizes 
+	them by Desktop Group
+	******************************************/
+	var getChosenGroups = function(chosenApps){
+	
+		var deliveryGroups = {};		
+		var delGrp;
+		var delGrpId;
+		var app;
+		var adGrps;
+		var appIndex;
+		
+		for(var i = 0; i < chosenApps.length; i++){		
+			app = chosenApps[i];			
+						
+			for(var d = 0;d < app.DesktopGroup.length; d++){
+				delGrpId = app.DesktopGroup[d].Name +"_"+ app.SiteId;				
+				
+				if(!deliveryGroups[delGrpId]){
+					delGrp = createNewDeliveryGroup(app,app.DesktopGroup[d]);					
+					delGrp.members = {};
+					
+					deliveryGroups[delGrpId] = delGrp;										
+				}																				
+				
+			}						
+		}
+	
+		return deliveryGroups;
+		
+	};	
+
+	/*****************************************
+	Match Access given to delivery group
+	******************************************/
+	var loadSelectedUsers = function(deliveryGroups,accessGiven){
+		var deliveryGroupId;
+		var membersId;
+		for(var i = 0; i < accessGiven.length; i++){
+			deliveryGroupId = accessGiven[i].desktop_group+"_"+accessGiven[i].site_id;
+			
+			if(deliveryGroups[deliveryGroupId]){
+				membersId = (accessGiven[i].ad_group)?deliveryGroupId+"_"+accessGiven[i].ad_group+"_members":deliveryGroupId+"_members";
+				
+				deliveryGroups[deliveryGroupId].members[membersId] = accessGiven[i].users;
+			}
+			
+		}
+	};
+	
+	/*****************************************
+	Takes content from RITM record and assigns
+	variable values to scope elements
+	******************************************/
+	var addContentToPage = function(answer){	
+		
+		var ritm;
+		try{			
+			$scope.record  = JSON.parse(answer);		
+		
+			$scope.users = $scope.record.variables.users.value;
+			$scope.chosenApps = $scope.record.variables.select_applications.value;			
+			$scope.deliveryGroups = getChosenGroups($scope.chosenApps);
+			loadSelectedUsers($scope.deliveryGroups,$scope.record.access_given);
+			
+			if($scope.record.state.value != 1){
+				$scope.canEdit = false;
+			}
+						
+					
+		}catch(error){
+			jslog('Unable to load RITM',error);
+			window.location = "/sc_req_item.do?sys_id="+$scope.record.sys_id;
+		}
+	};
+	
+	var loadRITMAndVariables = function(ritm_sys_id,callback){				
+		var appAjax = new GlideAjax('CTXClientRequest');
+		appAjax.addParam('sysparm_name','getRITMAndVariables');
+		appAjax.addParam('sysparm_ritm_sys_id',ritm_sys_id);
+		appAjax.getXML(callback);				
+	};
+	
+	
+	
+	var parseUserSysIds = function(membersString){
+		if(membersString == null || membersString == ''){
+			return '';
+		}
+		var userSysIds = [];
+		try{
+			
+			var users = JSON.parse(membersString);
+			for(var i =0; i < users.length; i++){
+				userSysIds.push(users[i].sys_id);
+			}
+			return userSysIds.join();
+		}catch(error){
+			jslog("Unable to provide access to users");			
+		}
+		return '';
+	};
+	
+	/***********************************
+	Parses the selected users HTML elements
+	to obtain which users have been assigned
+	to which group
+	************************************/
+	var getAccessGroups = function(){
+		var chosenUserElements = document.getElementsByClassName('chosen_user_list');
+		
+		var listElement;
+		var accessGroups = [];
+		var accessRec;
+		var members;
+		for(var i = 0; i < chosenUserElements.length; i++){
+			listElement = chosenUserElements[i];
+			
+			members = listElement.getAttribute('members');
+			
+			if(members == '' || members == '[]'){
+				continue;
+			}
+					
+			accessRec = {
+				ritm:$scope.record.sys_id,
+				users:parseUserSysIds(members),
+				site_id:listElement.getAttribute('site-id'),
+				desktop_group:listElement.getAttribute('group-name'),
+				ad_group:listElement.getAttribute('ad-group')
+			};
+			
+			accessGroups.push(accessRec);
+			
+		}
+		
+		return accessGroups;
+	};
+	
+	$scope.submitUpdate = function(){
+		
+		
+		var callback = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			
+			var reloadForm = function(res){
+				window.location.reload();
+			};
+			
+			if(answer == 'true'){
+				var reqAjax = new GlideAjax('CTXClientRequest');
+				reqAjax.addParam('sysparm_name','updateRITMStateWorkInProgress');
+				reqAjax.addParam('sysparm_ritm_sys_id',$scope.record.sys_id);
+				reqAjax.getXML(reloadForm);
+			}else{
+				jslog("Unable to save access records");
+			}
+			
+		};
+		
+		var accessRecords = getAccessGroups();
+		
+		var reqAjax = new GlideAjax('CTXClientRequest');
+		reqAjax.addParam('sysparm_name','insertAccessRecords');
+		reqAjax.addParam('sysparm_access_records',JSON.stringify(accessRecords));
+		reqAjax.getXML(callback);
+		
+	};		
+	
+	(function loadRequest(){
+		var ritm_sys_id = getParameterValue('sys_id');
+		
+		ajaxCall.run(loadRITMAndVariables,ritm_sys_id).then(addContentToPage);
+	})();
+		
+});
+
+app.service('ajaxCall',function($q){
+		
+	this.run = function(ajaxFunc,input){
+		var deferred = $q.defer();
+		var callback = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			deferred.resolve(answer);
+		};
+		if(input){
+			ajaxFunc(input,callback);
+		}else{
+			ajaxFunc(callback);
+		}
+		
+		return deferred.promise;
+	};
+});
+
+app.service('summaryParser',function(){
+	
+	this.parseContent = function(contentArray,labelElement){
+		
+		var max = (contentArray.length > 8)? 8:contentArray.length;
+		var listString = "";
+		for(var i = 0; i < max; i++){			
+			listString = (i < (max-1))?listString+contentArray[i][labelElement]+', ':listString+contentArray[i][labelElement];
+		}
+		return listString;
+	};
+	
+});
+
+app.directive('groupObject',function(summaryParser,$compile){
+	var xml;
+	
+	function isEmpty(obj) {
+		for(var key in obj) {
+			if(obj.hasOwnProperty(key))
+				return false;
+		}
+		return true;
+	}
+	
+	var html = document.getElementById("group_template").innerHTML;
+	html = html.substring(2, html.length-2);
+	
+	return {
+		template:html,
+		scope: {						
+			allapps:'@'
+		},
+		
+		link: function($scope, $element, $attr) {
+					
+			$scope.canEdit = ($attr.canedit == 'true');
+			$scope.groupid = $attr.groupid;
+			$scope.group = JSON.parse($attr.group);
+			$scope.type = $attr.type;						
+			$scope.hasADGroup = !isEmpty($scope.group.ADGroups);
+			$scope.members = [];
+			
+			var createMoreLink = function(members){
+
+				var link = (members.length > 4)?("+" + (members.length-4)+" more"):'';
+				return link;
+			};
+			
+			//For loading only
+			$scope.getMembersNames = function(membersId){
+				
+				var members = $scope.group.members[membersId];
+			
+				if(members == null|| members.length == 0){
+					return;
+				}
+				var names = "";
+				var max = (members.length > 4)? 4:members.length;
+
+				for(var i = 0; i < max;i++){
+					names += (i < (max-1))? members[i].name+", ":members[i].name;
+				}
+				$scope.members = members;
+				return names;
+			};
+			
+			$scope.getMoreLink = function(members){
+				if(members == null){
+					return '';
+				}
+				var link = createMoreLink(members);
+				return link;
+			};
+			
+			
+			$scope.openApplicationModal = function(group){
+							
+				var description = "Following are the applications that are part of";
+				
+				var modalDialog = new GlideModal("x_cion_citrix_it_s_application_modal");
+				modalDialog.setTitle("Applications");				
+				modalDialog.setPreference('apps',group.Applications);	
+				modalDialog.setPreference('description',description);	
+				modalDialog.setPreference('group_name',group.Name);
+				modalDialog.setSize(700, 800);
+				modalDialog.render();
+			};
+			
+			$scope.openUserSelectModal = function(groupId,groupName){
+				var users;
+				if($scope.canEdit){
+					users = $attr.users;
+				}else{
+					users = $scope.group.members[groupId+"_members"];
+				}
+				
+				var modalDialog;
+				if($scope.canEdit){
+					modalDialog = new GlideModal("x_cion_citrix_it_s_group_user_select");
+					modalDialog.setTitle("User selection");
+					modalDialog.setPreference("group_type",$attr.type);
+					modalDialog.setPreference("group_id",groupId);
+					modalDialog.setPreference("group_name",groupName);
+					modalDialog.setPreference("users",users);
+					modalDialog.setSize(700, 800);
+					modalDialog.render();
+				}else{
+					modalDialog = new GlideModal("x_cion_citrix_it_s_more_list_page");
+					modalDialog.setTitle("Users");
+					modalDialog.setPreference("list",JSON.stringify(users));
+					modalDialog.setPreference("labelelement",'name');
+					modalDialog.setPreference("title","Users");
+					modalDialog.setSize(500, 800);
+					modalDialog.render();
+				}
+				
+			};
+			
+			 
+		},
+	};
+});
+
+app.directive('summaryList',function(summaryParser,$compile){
+	 
+	var html = document.getElementById("summary_list").innerHTML;
+	html = html.substring(2, html.length-2);
+	
+	return {
+		template:html,
+		scope: {			
+			content:'@',
+			title:'@',
+			max:'@'
+		},
+		
+		link: function($scope, $element, $attr) {
+			
+			$scope.parsed_content = '';
+			$scope.showMore = false;
+			$scope.more_num = '';
+			
+			var updateListContent = function(content){
+				
+				if(content != null && content != ''){
+					
+					var labelElement = $attr.labelelement;
+					var contentArray = JSON.parse($attr.content);
+					$scope.parsed_content = summaryParser.parseContent(contentArray,labelElement);
+					$scope.showMore = (contentArray.length > $attr.max)? true:false;
+					$scope.more_num = (contentArray.length > $attr.max)? contentArray.length - $attr.max:'';
+					
+				}
+			};
+			
+			$scope.$watch('content',updateListContent);
+			
+			$scope.moreLink = function(){
+				
+				var modalDialog = new GlideModal("x_cion_citrix_it_s_more_list_page");
+				modalDialog.setTitle($attr.title);
+				modalDialog.setPreference("list",$scope.content);
+				modalDialog.setPreference("title",$attr.title);
+				modalDialog.setPreference("labelelement",$attr.labelelement);
+				modalDialog.setSize(500, 800);
+				modalDialog.render();
+			};					
+		},
+	};
+});
+
+		]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_app_provision_view.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.14/angular.min.js"></script>
+		<style>
+			.column{
+				width:50%;
+			}
+			html[data-doctype="true"] body[data-formname="ui_page_render"] {
+				padding:0;				
+			}
+			html[data-doctype="true"] body[data-formname="ui_page_render"] .navbar {
+				margin:0;
+			}
+			#title_bar{
+				height: 46px;	
+				font-size:13px;
+				color: #343D47;
+				padding:5px;
+				margin:0;
+				margin-bottom:20px;
+			}
+			
+			#ritm_title_label {
+				margin-bottom:0;
+			}
+			
+			.tab-title{
+				font-size: 12px;
+				font-weight: bold;
+			}
+			.tab-content{
+				background-color:white;			
+			}
+			#tab1,#tab2{
+				padding-top:20px;
+				padding-left:30px;
+			}
+			
+			#tablist{
+				padding:0;
+				margin-bottom:0;
+			}
+			
+			.form_update{
+				float:right;
+			}
+			
+			#form_body{
+				padding-left:50px;
+				padding-right:80px;
+			}
+			
+			#summary_lists,#fields_container{
+				margin-bottom:30px;
+				padding-left: 5%;
+				padding-right: 10%;
+			}
+			#tabs-macro,#summary_lists{
+				padding-left: 5%;
+				padding-right: 10%;
+			}
+			
+			#bottom-section{
+				padding-top:20px;
+				padding-left: 5%;
+				
+			}
+			#fields_container,#left_column,#right_column{
+				padding-left:0;
+			}
+			
+			.del-group-pane{
+				margin-bottom:30px;
+			}
+
+			.grp-title{
+				font-weight:bold;
+			}
+			.chosen_users{		
+				font-size:11px;
+			}
+			.no-pad-left{
+				padding-left:0 !important;
+			}
+			.icon-info{
+				margin-right:5px;
+			}
+			
+			.summary_list_content{
+				font-size: 11px;
+			}
+
+		</style>
+		<script id="summary_list" type="html">
+			<div class="summary_list_content no-pad-left">
+				<span><b>{{title}}</b><p>{{parsed_content}} <a href="#" ng-show="showMore" ng-click="moreLink()">+{{more_num}} more</a></p></span>
+			</div>
+
+		</script>
+		
+		<script id="group_template" type="html">
+			<div class="del-group-pane no-pad-left col-sm-12">
+				<!-- DELIVERY GROUPS -->
+				<div class="no-pad-left col-xs-12" ng-if="type == 'Delivery Group'">
+					<div class="no-pad-left col-xs-12">	
+						<p class="grp-title"><a href="#" class="icon-info" ng-click="openApplicationModal(group)"></a>{{group.Name}}, {{group.SiteName}}</p>
+						<div id="{{groupid}}" group-name="{{group.Name}}" group-type="{{type}}" site-id="{{group.SiteId}}" applications="{{group.Applications}}" class="group-id-container col-xs-12">
+							<button id="{{groupid}}_lock" href="#" class="btn btn-default btn-ref" ng-click="openUserSelectModal(groupid,group.Name)" ng-disabled="{{!canEdit}}">
+								<span class="icon icon-locked" aria-hidden='true'></span>
+							</button>
+							<div class="no-pad-left col-xs-12">
+								<p class="chosen_users">
+									<span id="{{groupid}}_chosen_users" class="chosen_user_list" group-name="{{group.Name}}" type="text" site-id="{{group.SiteId}}" members="{{members}}">{{getMembersNames(groupid+"_members")}}</span>
+									<a id="{{groupid}}_more_users" href='#' ng-click='openUserSelectModal(groupid,group.Name)'>{{getMoreLink(group.members[groupid+"_members"])}}</a>
+								</p>
+							</div>
+						</div>			
+					</div>
+
+				</div>
+
+				<!-- AD GROUPS -->
+				<div class="no-pad-left col-xs-12" ng-if="type == 'AD Group' &amp;&amp; hasADGroup" >
+					<div class="no-pad-left col-xs-12">	
+						<p class="grp-title"><a href="#" class="icon-info" ng-click="openApplicationModal(group)"></a>{{group.Name}}, {{group.SiteName}}</p>
+						<div id="{{id}}" group-name="{{adGrp}}" del-group-name="{{group.Name}}" group-type="{{type}}" class="group-id-container col-xs-12" ng-repeat="adGrp in group.ADGroups" ng-init="id = groupid+'_'+adGrp">				
+							<div class="col-xs-12">
+
+								<p class="grp-title" >{{adGrp}}</p>
+								<button id="{{id}}_lock" href="#" class="btn btn-default btn-ref" ng-click="openUserSelectModal(id,adGrp)" ng-disabled="{{!canEdit}}">
+									<span class="icon icon-locked" aria-hidden='true'></span>
+								</button>
+							</div>
+							<div class="col-xs-12">
+								<p class="chosen_users">
+									<span id="{{id}}_chosen_users"  type="text" class="chosen_user_list" group-name="{{group.Name}}" ad-group="{{adGrp}}" site-id="{{group.SiteId}}" members="{{members}}">{{getMembersNames(id+"_members")}}</span>
+									<a id="{{id}}_more_users" href='#' ng-click='openUserSelectModal(id,adGrp)'>{{getMoreLink(group.members[id+"_members"])}}</a>
+								</p>
+							</div>
+						</div>
+					</div>		
+				</div>
+			</div>
+		</script>
+	</head>
+	
+	<body ng-app="appProv" ng-controller="appProvCtrl" ng-cloak="">
+		
+		<nav id="title_bar" class="title_bar navbar navbar-default ">
+			<div class="navbar-header col-xs-6">
+				<p id="ritm_title_label"><b>Requested Item</b></p>
+				<p>{{record.number}}</p>
+			</div>
+			<div class="navbar-right col-xs-6">
+				<button class='form_update form_action_button header action_context btn btn-default' ng-click="submitUpdate()" ng-show="canEdit">Update</button>
+			</div>
+		</nav>
+		
+		<div id="form_body" class='col-xs-12'>
+			<div id="fields_container" class='col-sm-12'>
+
+				<div id="left_column" class='col-sm-6 column'>				
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">Number</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.number}}" class="form-control" readonly=""/>
+							</div>
+							
+							<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">Due Date</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.due_date}}" class="form-control" readonly=""/>
+							</div>
+						</div>
+						<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+					</form>			
+
+				</div>
+				<div id="right_column" class='col-sm-6 column'>				
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-12 col-md-3 col-lg-4 control-label">
+								<span class="label-text">State</span>
+							</label>
+							<div class="col-xs-10 col-sm-9 col-md-6 col-lg-5 form-field input_controls">
+								<input value="{{record.state.displayValue}}" class="form-control" readonly=""/>
+							</div>
+							<div class="col-xs-2 col-sm-3 col-lg-2 form-field-addons"></div>
+						</div>
+						
+					</form>		
+
+				</div>
+			</div>
+			<!-- LISTS -->
+			<div id="summary_lists" class="col-xs-12">
+				<p><b>Application Provisioning</b></p>
+				<div class="col-xs-12 no-pad-left">
+					<div class="col-xs-12 col-sm-6 no-pad-left">
+						<summary-list title="Users" content="{{users}}" max="8" labelelement="name"></summary-list>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<summary-list title="Applications" content="{{chosenApps}}" max="8" labelelement="Name"></summary-list>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- TABS -->
+			<div id="tabs-macro" class="col-xs-12">
+			
+				<ul id="tablist" role="tablist" class="nav nav-tabs sn-tabs-basic">
+
+					<li role="presentation" class="active" data-toggle="tab" ng-click="selectTab($event)">
+						<a href="#" goto="tab1" class="tab-title active"><b>Add users to Delivery Group(s)</b></a>
+					</li>
+					<li role="presentation" data-toggle="tab" ng-click="selectTab($event)">
+						<a href="#" goto="tab2" class="tab-title"><b>Add users to Active Directory Group(s)</b></a>
+					</li>
+
+				</ul>
+				<div class="tab-content">
+					<div id="tab1" class="tab-pane active col-sm-12">						
+						
+						<group-object type="Delivery Group" groupid="{{dgrpid}}" group="{{dgrp}}" users="{{record.variables.users.value}}" allapps="{{all_apps}}" ng-repeat="(dgrpid,dgrp) in deliveryGroups" canedit="{{canEdit}}"></group-object>
+											
+					</div>
+					<div id="tab2" class="tab-pane col-sm-12">			
+						<group-object type="AD Group" groupid="{{dgrpid}}" group="{{dgrp}}" canedit="{{canEdit}}" users="{{record.variables.users.value}}" ng-repeat="(dgrpid,dgrp) in deliveryGroups"></group-object>
+					</div>
+				</div>
+
+			</div>				
+			
+			<div id="bottom-section" class="col-xs-12 ">
+				<button class="btn btn-default" ng-click="submitUpdate()" ng-show="canEdit">Update</button>
+			</div>
+			
+		</div>		
+		
+	</body>
+	
+</j:jelly>]]></html>
+        <name>app_provision_view</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:39:08</sys_created_on>
+        <sys_id>8f8fa9e2db9bd700677d3437b9961991</sys_id>
+        <sys_mod_count>108</sys_mod_count>
+        <sys_name>app_provision_view</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_8f8fa9e2db9bd700677d3437b9961991</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 21:02:17</sys_updated_on>
+    </sys_ui_page>
+</record_update>

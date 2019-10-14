@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXUserTools</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXUserTools</name>
+        <script><![CDATA[var CTXUserTools = Class.create();
+CTXUserTools.prototype = {
+    initialize: function() {
+    },
+
+	getUserRecord: function(user_sys_id){
+		var user = new GlideRecord('sys_user');
+		user.get(user_sys_id);
+		return (user == null)?null:user;
+	},
+	getUserName:function(user_sys_id){
+		var user = this.getUserRecord(user_sys_id);
+		return user.getValue('user_name');
+	},
+	getUserDomain:function(){
+		var domain = gs.getProperty('x_cion_citrix_it_s.user_domain');
+		return domain;
+	},
+	
+	getUserLDAPServer:function(user_sys_id){
+		var user = this.getUserRecord(user_sys_id);
+		var ldapServerUrl = user.ldap_server.server_url.toString();
+		if(ldapServerUrl.indexOf('ldap://') == 0){
+			ldapServerUrl = ldapServerUrl.substring(7);
+		}
+		if(ldapServerUrl.indexOf(":") > 0){
+			ldapServerUrl = ldapServerUrl.substring(0,ldapServerUrl.indexOf(":") );
+		}
+		
+		return ldapServerUrl;
+	},
+	
+	/**********************************************
+	Gets lists of users with given sys_ids in 
+	paratemeters. User elements returned are defined
+	in attrs array parameter. 
+	**********************************************/
+	getUsersWithAttributes:function(sys_ids,attrs){
+		var users = new GlideRecord('sys_user');
+		users.addQuery('sys_id','IN',sys_ids);
+		users.query();
+		
+		var userArr = [];
+		var userObj;
+		while(users.next()){
+			userObj = {};
+			for(var i = 0; i < attrs.length; i++){
+				userObj[attrs[i]] = users.getValue(attrs[i]);
+			}
+			
+			userArr.push(userObj);
+		}
+		return userArr;
+	},
+	
+	isValidUser:function(user_sys_id){
+		var user = this.getUserRecord(user_sys_id);
+		return !gs.nil(user);
+	},
+    type: 'CTXUserTools'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:59:49</sys_created_on>
+        <sys_id>66b35aa2dbdbd700677d3437b9961979</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>CTXUserTools</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_66b35aa2dbdbd700677d3437b9961979</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-17 22:47:58</sys_updated_on>
+    </sys_script_include>
+</record_update>

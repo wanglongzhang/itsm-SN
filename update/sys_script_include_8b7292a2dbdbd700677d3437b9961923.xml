@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXRequestUtil</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXRequestUtil</name>
+        <script><![CDATA[var CTXRequestUtil = Class.create();
+CTXRequestUtil.prototype = {
+    initialize: function() {
+    },
+	
+	_getVariables:function(ritm_sys_id){
+		var logger = new Logger();
+		
+		var userTool = new CTXUserTools();
+		var appUtil = new CTXApplication();
+		var osConfigUtil = new CTXOSConfiguration();
+		
+		var variable = new GlideRecord('sc_item_option_mtom');
+		variable.addQuery('request_item',ritm_sys_id);
+		variable.query();
+		
+		var variables = {};
+		var varObj;
+		var name;
+		var value;
+		var sys_id;
+		
+		while(variable.next()){
+			
+			name = variable.sc_item_option.item_option_new.name.toString();
+			value = variable.sc_item_option.value.toString();
+			sys_id = variable.getValue('sc_item_option');
+			
+			if(name == 'users'){
+				value = userTool.getUsersWithAttributes(value,["sys_id","name"]);
+			}
+		
+			if(name == 'select_applications'){
+				var appSysIds = value.split(',');
+				var apps = [];
+				
+				for(var i = 0; i < appSysIds.length; i++){
+					apps.push(appUtil.getApplicationObject(appSysIds[i]));					
+				}
+				
+				value = apps;
+			}
+			
+			if(name == 'os_config_requested'){
+				var osConfigName= value;
+				value = osConfigUtil.getOSConfigObject(osConfigName);
+			}
+			
+			varObj = {
+				value:value,
+				sys_id:sys_id
+			};
+			
+			variables[name] = varObj;			
+			
+		}
+		
+		return variables;
+	},
+	
+	_loadAccessGivenRecords:function(ritm_sys_id){
+		var accessUtil = new CTXAccess();
+		var accessRecords = accessUtil.getAccessRecordData(ritm_sys_id);
+		return accessRecords;
+	},
+	
+	getRITMAndVariables:function(ritm_sys_id){
+		var logger = new Logger();
+		
+		var sc_req_item = new GlideRecord('sc_req_item');
+		sc_req_item.get(ritm_sys_id);
+		var ritm = {};
+	
+		if(sc_req_item.isValidRecord()){
+			
+			ritm.sys_id = sc_req_item.getValue('sys_id');
+			ritm.number = sc_req_item.getValue('number');
+			ritm.due_date = sc_req_item.getValue('due_date');
+			ritm.requested_for = sc_req_item.request.requested_for.toString();
+			ritm.state = {
+				displayValue: sc_req_item.getElement('state').getDisplayValue(),
+				value: sc_req_item.getValue('state')
+			};
+			ritm.variables = this._getVariables(ritm.sys_id);
+			ritm.access_given = this._loadAccessGivenRecords(ritm.sys_id);
+			return ritm;
+		}
+		logger.logError("NO REQUEST",ritm_sys_id);
+		return "";
+	},
+
+	updateRITMVariable:function(variableSysId, value){
+		
+		var variableItem = new GlideRecord('sc_item_option');
+		variableItem.get(variableSysId);
+		
+		if(!gs.nil(variableItem)){
+			variableItem.setValue('value',value);
+			variableItem.update();
+		}
+	},
+	
+	updateRITMState:function(ritm_sys_id,newState){
+		var logger = new Logger();
+				
+		var sc_req_item = new GlideRecord('sc_req_item');
+		sc_req_item.get(ritm_sys_id);
+		
+		if(!gs.nil(sc_req_item)){
+			sc_req_item.setValue('state',newState);
+			sc_req_item.update();
+		}
+	},
+    type: 'CTXRequestUtil'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:55:03</sys_created_on>
+        <sys_id>8b7292a2dbdbd700677d3437b9961923</sys_id>
+        <sys_mod_count>19</sys_mod_count>
+        <sys_name>CTXRequestUtil</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_8b7292a2dbdbd700677d3437b9961923</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 19:20:21</sys_updated_on>
+    </sys_script_include>
+</record_update>

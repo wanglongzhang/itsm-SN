@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[window.onerror = function(message, url, lineNumber) { 
+	if(message == "Uncaught TypeError: Cannot read property 'fire' of undefined"){
+		return true;
+	}
+};
+
+(function(){
+	document.getElementById("slush_right").innerHTML = '';
+	document.getElementById("slush_right").setAttribute('ng-model','chosen_users');	
+	
+	var groupType = GlideModal.get().getPreference('group_type');
+	var groupName = GlideModal.get().getPreference('group_name');
+	var groupId = GlideModal.get().getPreference('group_id');
+	var groupTitle = groupType + ": " + groupName;
+	document.getElementById('group_title').innerHTML = groupTitle;	
+	
+	var curr_members = [];
+	
+	//Load current members
+	var chosenUsersId = groupId+"_chosen_users";
+	var chosenUsers = document.getElementById(chosenUsersId);	
+	
+	var membersStr = chosenUsers.getAttribute('members');
+	
+	if(membersStr != '' && membersStr != null){
+		curr_members = JSON.parse(membersStr);
+	}
+			
+	var isChosen = function(user_sys_id){
+		for(var i = 0; i < curr_members.length; i++){
+			if(curr_members[i].sys_id == user_sys_id){
+				return true;
+			}
+		}		
+		return false;
+	};
+					
+	var usersStr = GlideModal.get().getPreference('users');							
+	var users = JSON.parse(usersStr);
+	var leftBucket = document.getElementById('slush_left');
+	var rightBucket = document.getElementById('slush_right');
+	var option;
+	
+	for(var j = 0; j < users.length; j++){
+		option = document.createElement('option');
+		option.innerHTML = users[j].name;		
+		option.setAttribute('value',users[j].sys_id);		
+		
+		if(isChosen(users[j].sys_id)){
+			rightBucket.appendChild(option);			
+		}else{
+			leftBucket.appendChild(option);			
+		}
+		
+	}		
+	
+	var getChosenMembers = function(){
+		var rightBucket = document.getElementById('slush_right');
+		var chosenUsers = rightBucket.options;
+		
+		var user;
+		
+		var members = [];
+		for(var i= 0; i < chosenUsers.length; i++){
+			user = {
+				name:chosenUsers[i].innerHTML,
+				sys_id:chosenUsers[i].value
+			};
+			
+			members.push(user);
+		}
+		
+		return members;
+	};
+	var createMoreLink = function(members){
+			
+		var link = (members.length > 4)?("+" + (members.length-4)+" more"):'';
+		return link;
+	};
+	var getMemberNames = function(members){
+		var names = "";
+		var max = (members.length > 4)? 4:members.length;
+		
+		for(var i = 0; i < max;i++){
+			names += (i < (max-1))? members[i].name+", ":members[i].name;
+		}
+		return names;
+	};
+	
+	var closeModal = function(){		
+		GlideModal.get().destroy();
+	};
+	
+	document.getElementById("save_apps").addEventListener("click", function(){
+		var members = getChosenMembers();
+		var membersNames = getMemberNames(members);
+		var moreLink = createMoreLink(members);
+		
+		var chosenUsersId = groupId+"_chosen_users";
+		var moreUsersId = groupId+"_more_users";
+		var chosenUsers = document.getElementById(chosenUsersId);		
+		var moreUsers = document.getElementById(moreUsersId);		
+		
+		chosenUsers.setAttribute('members',JSON.stringify(members));
+		chosenUsers.innerHTML = membersNames;
+		moreUsers.innerHTML = moreLink;
+		
+		closeModal();
+	});
+		
+	document.getElementById('cancel_apps').addEventListener('click',function(){
+		closeModal();
+	});
+	
+	
+})();]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_group_user_select.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+		<style>
+			.modal-btn{
+				min-width:60px;
+				margin-right:10px;
+			}
+			
+			#group_title{
+				font-weight:bold;
+			}
+			
+			#slush_left,#slush_right{
+				max-width:100%;
+			}
+			
+		</style>
+	
+	<div class="col-xs-12">
+
+		<p id="group_title"></p>
+	</div>
+	<g:ui_slushbucket />
+	<div class="col-xs-12">
+		<button id="cancel_apps" class="btn btn-md btn-default modal-btn">Cancel</button>
+		<button id="save_apps" class="btn btn-md btn-primary modal-btn">OK</button>
+	</div>
+</j:jelly>]]></html>
+        <name>group_user_select</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:38:28</sys_created_on>
+        <sys_id>fa53b926db9bd700677d3437b9961968</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>group_user_select</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_fa53b926db9bd700677d3437b9961968</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 14:05:53</sys_updated_on>
+    </sys_ui_page>
+</record_update>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.AuthToken</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>AuthToken</name>
+        <script><![CDATA[var AuthToken = Class.create();
+AuthToken.prototype = {
+    initialize: function() {
+	
+		var auth_url = gs.getProperty('x_cion_citrix_it_s.auth_url');
+		this.TOKEN_HEADERS = {"Accept":"application/json","Content-Type":"application/json","Connection":"keep-alive","Host":auth_url};
+		this.TOKEN_ENDPOINT = auth_url+'/{0}/tokens/clients';
+		this.TOKEN_LIFETIME = 3300000;
+		this.TOKEN_RETRY_MAX = 6;
+		this.TOKEN_SUCCESS = "TOKEN_SUCCESS";
+		this.TOKEN_FAILURE = "TOKEN_FAILURE";
+				
+    },	
+	
+	testCredentials:function(clientId,clientSecret,customer_id){
+		var logger = new Logger();
+		if(gs.nil(customer_id)){
+			customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+		}		
+		
+		var rest = new RESTRequest();
+		
+        var body = {
+			"ClientId":clientId,
+			"ClientSecret":clientSecret
+		};
+        var endpoint = gs.getMessage(this.TOKEN_ENDPOINT,customer_id);  
+    
+		var tokenResponse = rest.post(endpoint,this.TOKEN_HEADERS,body); 
+		var tokenObj;
+		try{
+			tokenObj = JSON.parse(tokenResponse);
+		}catch(error){
+			logger.logError(tokenResponse);
+			return this.TOKEN_FAILURE;
+		}
+		 
+		if(tokenObj.token != null){		
+			return this.TOKEN_SUCCESS;
+		}else{
+			logger.logError("Unable to get token");
+			return this.TOKEN_FAILURE;
+		}
+		
+	},
+	
+	testCustomerId:function(customerId){
+		
+		var clientId = gs.getProperty('x_cion_citrix_it_s.client_id');
+		var clientSecret = gs.getProperty('x_cion_citrix_it_s.client_secret');		
+		return this.testCredentials(clientId,clientSecret,customerId);		
+		
+	},
+	getToken:function(){
+		var logger = new Logger();
+		var tokenRec = this._getCurrentToken();
+		return this._getValidToken(tokenRec);		
+	},
+		
+	_getValidToken:function(tokenRec){
+		var logger = new Logger();
+		var newToken;
+		
+		var tokenState = tokenRec.getValue('state');
+		logger.log('checking token');		
+		
+		if(tokenState == 'successful'){
+			logger.log("Successful token check expired");
+			
+			if(this._tokenExpired(tokenRec.getValue('timestamp')) == true){
+				
+				logger.log('token Expired');
+				return this._newTokenDriver();
+
+			}else{
+				
+				logger.log('Returning valid token');
+				return tokenRec.getValue('token');
+			}
+		}else if(tokenState == 'failed'){
+			logger.log("Token is in Failed State retrying");	
+			
+			return this._newTokenDriver();
+			
+		}else if(tokenState == 'retrieving'){
+			logger.log("Token is currently being retrieved");
+			
+			this._wait(1000);
+			return this.getToken();
+		}else{
+			logger.log("No Token");
+			return this._newTokenDriver();
+		}
+		logger.log('token state ' + tokenState);
+		
+	},
+	
+	_newTokenDriver:function(){
+		var logger = new Logger();
+		
+		var dt = new GlideDateTime();
+		var newTimestamp = dt.getDate() + " " + dt.getTime().toString().split(' ')[1];
+		this._updateToken('','retrieving',newTimestamp);						
+		var newToken = this._getNewToken();						
+		return this._handleNewToken(newToken);
+		
+	},
+	
+	_tokenExpired:function(timestamp){
+		var logger = new Logger();
+		
+		var dt = new GlideDateTime();
+		var tokents = new GlideDateTime(timestamp);
+
+		var diff = dt.getNumericValue() - tokents.getNumericValue();
+		if(diff >= this.TOKEN_LIFETIME){						
+			return true;
+		}else{
+			return false;
+		}
+	},
+	_handleNewToken:function(newToken){
+		var logger = new Logger();
+		if(newToken == null){
+			logger.logError("Received null token");
+		}
+		var dt = new GlideDateTime();
+		var newTimestamp = dt.getDate() + " " + dt.getTime().toString().split(' ')[1];
+		
+		if(newToken == null){
+			this._updateToken('','failed',newTimestamp);
+		}else{	
+			this._updateToken(newToken,'successful',newTimestamp);
+		}	
+		return newToken;
+	},
+	
+	_getNewToken:function(){
+		var logger = new Logger();
+		
+		var customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+		var clientId = gs.getProperty('x_cion_citrix_it_s.client_id');
+		var clientSecret = gs.getProperty('x_cion_citrix_it_s.client_secret');
+		
+		var rest = new RESTRequest();
+		
+        var body = {
+			"ClientId":clientId,
+			"ClientSecret":clientSecret
+		};
+        var endpoint = gs.getMessage(this.TOKEN_ENDPOINT,customer_id);
+    		
+		var retrys = 0;
+		
+		while(retrys < this.TOKEN_RETRY_MAX){
+			try{
+				var tokenResponse = rest.post(endpoint,this.TOKEN_HEADERS,body); 
+				var tokenObj;
+				tokenObj = JSON.parse(tokenResponse);
+				var token = tokenObj.token;
+				return token;	
+			}catch(error){
+				logger.logError("Token Error");
+				logger.logError(error);
+				this._wait(1000);
+				retrys++;
+				logger.log("Failed to get token");
+				logger.log("Token Retry " + retrys);
+			}			
+		}	
+		logger.logError("Failed to get Token after " + retrys + " attempts");
+		return null;
+      
+	},
+	_getCurrentToken:function(){
+		var logger = new Logger();
+		var tokenRec = new GlideRecord('x_cion_citrix_it_s_security_token');
+		tokenRec.query();
+		if(tokenRec.next()){
+			return tokenRec;
+		}else{
+			tokenRec = new GlideRecord('x_cion_citrix_it_s_security_token');
+			tokenRec.insert();
+			return tokenRec;
+		}
+	},
+	
+	_updateToken:function(tokenString,state,timestamp){
+		var logger = new Logger();
+		
+		var tokenRec = new GlideRecord('x_cion_citrix_it_s_security_token');
+		tokenRec.query();
+		
+		if(tokenRec.next()){			
+			tokenRec.setValue('token',tokenString);
+			tokenRec.setValue('state',state);
+			tokenRec.setValue('timestamp',timestamp);
+			tokenRec.update();
+		}else{
+			logger.logError("Unable to find token record while updating token");
+		}
+	},
+
+	_wait:function(time){
+		
+	   var t1 = new GlideDateTime().getNumericValue();
+	   var t2 = new GlideDateTime().getNumericValue();
+
+	   var duration = t2 - t1;
+
+	   while(duration < time){
+		 t2 = new GlideDateTime().getNumericValue();
+		 duration = t2 - t1;
+	   }
+		
+	},
+	
+    type: 'AuthToken'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:47:47</sys_created_on>
+        <sys_id>733092a2dbdbd700677d3437b99619dc</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>AuthToken</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_733092a2dbdbd700677d3437b99619dc</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 21:23:09</sys_updated_on>
+    </sys_script_include>
+</record_update>

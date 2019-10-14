@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXApplication</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXApplication</name>
+        <script><![CDATA[var CTXApplication = Class.create();
+CTXApplication.prototype = {
+    initialize: function() {
+    
+	},		
+	
+	//Checks if there are any application records
+	hasApplications:function(){
+		var app = new GlideRecord('x_cion_citrix_it_s_ctx_applications');
+		app.query();
+		
+		return (app.getRowCount() == 0)? false:true;
+	},
+	
+	updateApplication:function(appRecord,appObj){
+		
+		var deskGrpUtil = new CTXDesktopGroup();
+		var deskGrpsSysId = deskGrpUtil.processDesktopGroups(appObj.DesktopGroup);
+		
+		var siteUtil = new CTXSite();
+		var siteSysId = siteUtil.processSite(appObj.SiteName,appObj.SiteId);
+		
+		appRecord.setValue('desktop_groups',deskGrpsSysId);
+		appRecord.setValue('site',siteSysId);
+		appRecord.update();
+	},
+	
+	createApplication:function(appObject){
+		
+		var logger = new Logger();
+	
+		var name = appObject.Name;
+		
+		var deskGrpUtil = new CTXDesktopGroup();
+		var deskGrpsSysId = deskGrpUtil.processDesktopGroups(appObject.DesktopGroup);
+		
+		var siteUtil = new CTXSite();
+		var siteSysId = siteUtil.processSite(appObject.SiteName,appObject.SiteId);
+		
+		var app = new GlideRecord('x_cion_citrix_it_s_ctx_applications');
+		app.setValue('name',name);
+		app.setValue('desktop_groups',deskGrpsSysId);
+		app.setValue('site',siteSysId);
+		
+		app.insert();
+	},
+	
+	getApplicationByName:function(name){
+		var app = new GlideRecord('x_cion_citrix_it_s_ctx_applications');
+		app.addQuery('name',name);
+		app.query();
+		
+		return (app.next())?app:null;
+	},
+	
+	getApplicationSysId:function(sys_id){
+		var app = new GlideRecord('x_cion_citrix_it_s_ctx_applications');
+		app.get(sys_id);
+		
+		return (app.isValidRecord())?app:null;
+	},
+	
+	getApplicationsByDesktopGroup:function(desktopGrp){
+		var app = new GlideRecord('x_cion_citrix_it_s_ctx_applications');
+		app.addEncodedQuery('desktop_groupsLIKE'+desktopGrp);
+		app.query();
+		
+		var applications = []; 
+		while(app.next()){
+			applications.push(app.getValue('name'));
+		}
+		return applications;
+	},
+	
+	getApplicationObject:function(sys_id){
+		var logger = new Logger();
+		var appRecord = this.getApplicationSysId(sys_id);
+		if(gs.nil(appRecord)){
+			return null;
+		}
+		
+		var appObj = {
+			Name:appRecord.getValue('name')			
+		};
+		
+		var deskGrpSysIds = appRecord.getValue('desktop_groups');
+		
+		if(!gs.nil(deskGrpSysIds)){
+			deskGrpSysIds = deskGrpSysIds.split(',');
+			appObj.DesktopGroup = [];
+			var deskGrpUtil = new CTXDesktopGroup();
+			
+			for(var i = 0; i < deskGrpSysIds.length; i++){
+				appObj.DesktopGroup.push(deskGrpUtil.getDesktopGroupObject(deskGrpSysIds[i]));
+			}
+			 
+		}
+			
+		var siteSysId = appRecord.getValue('site');
+		if(!gs.nil(siteSysId)){
+			var siteUtil = new CTXSite();
+			var site = siteUtil.getSiteById(siteSysId);
+			appObj.SiteId = site.getValue('site_id');
+			appObj.SiteName = site.getValue('site_name');
+		}
+			
+		return appObj;
+	},
+	
+	refreshApplications:function(){
+		
+		var appProvisionUtil = new CTXAppProvision();	
+		var apps = appProvisionUtil.getApplications();		
+		
+		if(gs.nil(apps)){
+			return false;
+		}
+		
+		var appRecord;
+		
+		for(var i = 0; i < apps.length; i++){
+
+			appRecord = this.getApplicationByName(apps[i].Name);
+			
+			if(gs.nil(appRecord)){
+				this.createApplication(apps[i]);
+			}else{
+				this.updateApplication(appRecord,apps[i]);
+			}
+		}
+		
+		return true;
+	},
+
+    type: 'CTXApplication'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 20:55:42</sys_created_on>
+        <sys_id>1177cbeedbdbd700677d3437b99619b2</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name>CTXApplication</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_1177cbeedbdbd700677d3437b99619b2</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 20:35:25</sys_updated_on>
+    </sys_script_include>
+</record_update>

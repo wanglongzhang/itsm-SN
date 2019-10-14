@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXClientRequest</api_name>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>CTXClientRequest</name>
+        <script><![CDATA[var CTXClientRequest = Class.create();
+CTXClientRequest.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	
+	getApplications:function(){
+		
+		var appProvision = new CTXAppProvision();
+		return JSON.stringify(appProvision.getApplications());
+		
+	},
+	
+	getRITMAndVariables:function(){
+		var ritm_sys_id = this.getParameter('sysparm_ritm_sys_id');
+		
+		var ctxRitm = new CTXRequestUtil();
+		var ritm = ctxRitm.getRITMAndVariables(ritm_sys_id);
+		return JSON.stringify(ritm);
+	},
+	
+	getCitrixRequest:function(){
+		var logger = new Logger();
+		
+		var ctx_request_sys_id = this.getParameter('sysparm_ctx_request_sys_id');
+		var ctx_request = new GlideRecord('x_cion_citrix_it_s_citrix_requests');
+		ctx_request.get(ctx_request_sys_id);
+		
+		if(!gs.nil(ctx_request)){
+			var ritmSysId = ctx_request.getValue('requested_item');
+			
+			var ctxRitm = new CTXRequestUtil();
+			var ritm = ctxRitm.getRITMAndVariables(ritmSysId);
+			
+			return JSON.stringify(ritm);
+		}
+		
+		logger.logError("NO REQUEST",ctx_request_sys_id);
+		return null;
+	},
+	
+	updateRITMStateWorkInProgress: function(){
+		var logger = new Logger();
+		var ritmUtil = new CTXRequestUtil();
+		var ritmSysId = this.getParameter('sysparm_ritm_sys_id');
+		var newState = 2;//Work In Progress
+		
+		ritmUtil.updateRITMState(ritmSysId,newState);
+	},		
+	
+	
+	getAvailableConfigs: function(){
+		var ctxDesktop = new CTXDesktopProvision();
+		var configs = ctxDesktop.getAvailableConfigs();
+		return JSON.stringify(configs);
+	},
+	
+	insertAccessRecords:function(){
+		var logger = new Logger();
+		var recordsString = this.getParameter('sysparm_access_records'); 
+		try{
+			var records = JSON.parse(recordsString);
+			var accessUtil = new CTXAccess();
+			
+			for(var i = 0;i < records.length; i++){
+				accessUtil.createAccessRecord(records[i]);
+			}
+			return 'true';
+		}catch(err){
+			logger.logError('Unable to insert Access Records');
+			logger.logError(err);
+			
+			return 'false';
+		}
+	},
+	
+	refreshConnectorData:function(){
+		
+		//check if any data
+		var appUtil = new CTXApplication();
+		var osConfigUtil = new CTXOSConfiguration();
+		if(!appUtil.hasApplications() || !osConfigUtil.hasOSConfiguration()){
+			
+			//Refresh OS Configurations			
+			var osOk = osConfigUtil.refreshAvailableOSConfigurations();		
+			
+			//Refresh Applications	
+			var appsOK = appUtil.refreshApplications();										
+			
+			if(osOk &&  appsOK){
+				return 'true';
+			}else{
+				return 'false';
+			}	
+		}
+		
+		return 'true';
+	},
+	
+    type: 'CTXClientRequest'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:52:03</sys_created_on>
+        <sys_id>87d1da22dbdbd700677d3437b996192c</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>CTXClientRequest</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_87d1da22dbdbd700677d3437b996192c</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 18:10:33</sys_updated_on>
+    </sys_script_include>
+</record_update>

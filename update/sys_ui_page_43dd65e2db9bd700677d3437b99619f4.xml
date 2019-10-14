@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[window.location = "";]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_redirect_homepage.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<g2:evaluate>
+		var url = '';
+		
+		var authCustomer = new GlideRecord('x_cion_citrix_it_s_authenticated_customer_id');
+		authCustomer.query();
+		
+		if(authCustomer.next()){
+			url = "/x_cion_citrix_it_s_connection_status.do";
+		}else{
+			url = "/x_cion_citrix_it_s_ctx_getting_started.do";
+		}
+		
+		gs.setRedirect(url);
+		
+	</g2:evaluate>
+	
+</j:jelly>]]></html>
+        <name>redirect_homepage</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:14:23</sys_created_on>
+        <sys_id>43dd65e2db9bd700677d3437b99619f4</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>redirect_homepage</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_43dd65e2db9bd700677d3437b99619f4</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-26 16:51:51</sys_updated_on>
+    </sys_ui_page>
+</record_update>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[(function(){
+	
+	var apps = GlideModal.get().getPreference('apps');
+	var description = GlideModal.get().getPreference('description');
+	document.getElementById("description").prepend(description);
+	
+	var groupName = GlideModal.get().getPreference('group_name');
+	
+	if(groupName != null && groupName != ''){
+		document.getElementById('group_name').innerHTML = groupName;
+	}
+	
+	
+	var tr;
+	var td;		
+	
+	for(var i = 0; i < apps.length; i++){
+		
+		tr = document.createElement('tr');
+		tr.classList.add('data_row');
+		
+		td = document.createElement('td');
+		td.classList.add('vt');
+		td.classList.add('grid-field');
+		td.innerHTML = apps[i];	
+		
+		document.getElementById('apps_table').appendChild(tr);
+		
+		tr.appendChild(td);
+	
+		
+	}
+			
+})();]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_application_modal.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	
+	<p id="description"><span>$[SP]<b id="group_name"></b></span></p>
+	<table class="table table-hover original-table list-grid table-striped" style="cursor: default; user-select: text;">
+		<thead class="table-body-headers">
+			<tr class="table-header">
+				<th class="table-column-header">
+					<a class="sort-columns">Name</a>
+				</th>
+			</tr>
+		</thead>
+		<tbody id="apps_table" class="list_table_tbody">
+			<tr class="data_row">
+							
+			</tr>	
+		</tbody>
+	</table>
+</j:jelly>]]></html>
+        <name>application_modal</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:35:30</sys_created_on>
+        <sys_id>5ca23926db9bd700677d3437b996198e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>application_modal</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_5ca23926db9bd700677d3437b996198e</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-17 14:35:30</sys_updated_on>
+    </sys_ui_page>
+</record_update>

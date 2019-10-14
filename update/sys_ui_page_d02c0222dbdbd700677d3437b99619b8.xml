@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[var app = angular.module('homeApp',[]);
+
+app.controller('homeAppCtrl',function($scope,$http,$q,interceptor){
+	
+	//interceptor.checkSetupComplete();
+	
+	$scope.client_id = "";
+	$scope.client_secret = "";
+	$scope.customer = "";	
+	
+	$scope.removeAllAlerts = function(){
+		gel('cred_success').classList.add('hide');
+		gel('cred_testing').classList.add('hide');
+		gel('cred_failed').classList.add('hide');
+	};
+	
+	$scope.testCredentials = function(){
+		$scope.removeAllAlerts();
+		
+		gel('cred_testing').classList.remove('hide');
+		
+		var testResults = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer == 'TOKEN_SUCCESS'){
+				gel('cred_testing').classList.add('hide');
+				gel('cred_success').classList.remove('hide');
+				gel('save_client_cred_btn').classList.remove('hide');
+				
+			}else if(answer == 'TOKEN_FAILURE'){
+				gel('cred_testing').classList.add('hide');
+				gel('cred_failed').classList.remove('hide');
+				gel('save_client_cred_btn').classList.add('hide');
+			}
+		};
+		
+		var authAjax = new GlideAjax('CTXSrvcsCreds');
+		authAjax.addParam('sysparm_name','testCredentials');
+		authAjax.addParam('sysparm_client_id',$scope.client_id);
+		authAjax.addParam('sysparm_client_secret',$scope.client_secret);
+		authAjax.getXML(testResults);
+		
+	};
+	
+	$scope.getCustomerIds = function(){
+		
+		$scope.auth_msg ="Retrieving Customer ID(s). Please wait...";		
+		$scope.customers = [];		
+		
+		var addCustomerIds = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');		
+			
+			var customers = JSON.parse(answer);
+			
+			if(customers != null && customers.length > 0){
+				//Kickoff digest loop to reald options
+				$scope.$apply(function(){ 
+					$scope.customer = customers[0];
+					$scope.customers = customers; 
+				});
+				
+				gel("wait-message-container").style.display = 'none';	
+				gel('modal-customer-id').querySelector('.modal-body').style.display ='block';
+				gel('modal-customer-id').querySelector('.modal-footer').style.display ='block';
+				
+			}else{			
+				$scope.auth_msg ="Unable to retrieve Customer ID(s). Check logs for errors";				
+			}
+					
+		};
+		
+		var authAjax = new GlideAjax('CTXSrvcsCreds');
+		authAjax.addParam('sysparm_name','getCustomerID');
+		authAjax.getXML(addCustomerIds);
+	};
+	
+	$scope.saveCustomerId = function(){
+		$scope.auth_msg = "Saving properties. Please wait...";
+		
+		gel("modal-customer-id").querySelector('.modal-body').style.display = 'none';
+		gel("modal-customer-id").querySelector('.modal-footer').style.display = 'none';
+		
+		gel("wait-message-container").style.display = 'block';
+		
+		var savesResult = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer){
+			
+				$scope.closeModal();
+				interceptor.checkSetupComplete();
+			}else{
+				jslog('Unable to save customer ID');
+			}			
+		};
+		
+		var authAjax = new GlideAjax('CTXSrvcsCreds');
+		authAjax.addParam('sysparm_name','updateCustomerId');
+		authAjax.addParam('sysparm_customer_id',$scope.customer.customer_id);
+		authAjax.addParam('sysparm_display_name',$scope.customer.display_name);
+		authAjax.addParam('sysparm_organization_id',$scope.customer.organization_id);
+		authAjax.addParam('sysparm_geo',$scope.customer.geo);
+		authAjax.getXML(savesResult);
+		
+	
+	};
+	
+	$scope.saveCredentials = function(){
+		$scope.auth_msg = "Saving properties. Please wait...";
+		var deferred = $q.defer();
+		var savesResult = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer){
+				
+				deferred.resolve();
+				
+			}else{
+				jslog('Unable to save properties');
+			}
+			
+		};
+		var authAjax = new GlideAjax('CTXSrvcsCreds');
+		authAjax.addParam('sysparm_name','updateCredentials');
+		authAjax.addParam('sysparm_client_id',$scope.client_id);
+		authAjax.addParam('sysparm_client_secret',$scope.client_secret);
+		authAjax.getXML(savesResult);
+		
+		return deferred.promise;
+	};
+		
+	
+	
+	$scope.openAuthModal = function(){
+		$scope.removeAllAlerts();
+		gel("modal-authentication").querySelector('.modal').style.display = 'block';		
+	};
+	
+	$scope.openCustomerIDModal = function(){
+		$scope.removeAllAlerts();
+		$scope.saveCredentials().then($scope.getCustomerIds);
+				
+		gel("modal-authentication").querySelector('.modal').style.display = 'none';	
+		gel("modal-customer-id").querySelector('.modal').style.display = 'block';	
+				
+	};
+	
+	$scope.modalBack = function(){		
+		gel("modal-customer-id").querySelector('.modal').style.display = 'none';		
+		gel("modal-authentication").querySelector('.modal').style.display = 'block';
+	};
+
+	$scope.closeModal = function(){
+		var modal = document.getElementsByClassName('modal');
+		for(var m = 0; m < modal.length; m++){
+			modal[m].style.display = 'none';
+		}
+	};
+	
+	
+	
+	/*
+	JQUERY FUNCTIONS
+	*/
+		
+	jQuery(window).click(function(event) {
+		if(event.target == jQuery(".modal")[0]){
+			jQuery(".modal").css('display','none');
+		}
+	});
+
+	
+	jQuery(document).ready(function() {
+		var maxHeight = 110;
+		
+		jQuery('.box-content').each(function(){
+			var box = jQuery(this);
+			var text = box.css('height');
+			text = text.substring(0,text.length-2);			
+			var height = parseInt(text) + 20;
+		
+			if(height > maxHeight){
+				maxHeight = height;
+			}
+		});
+		jQuery('.box').each(function(){
+			
+			var box = jQuery(this);
+			box.css('min-height',maxHeight+'px');
+		});
+		
+	});
+	
+	jQuery(window).on('resize', function(){
+		
+		var maxHeight = 110;
+		
+		jQuery('.box-content').each(function(){
+			var box = jQuery(this);
+			var text = box.css('height');
+			text = text.substring(0,text.length-2);			
+			var height = parseInt(text) + 20;
+		
+			if(height > maxHeight){
+				maxHeight = height;
+			}
+		});
+		jQuery('.box').each(function(){			
+			var box = jQuery(this);
+			box.css('min-height',maxHeight+'px');
+		});
+	});
+
+});
+
+app.service('interceptor',function($http){
+	
+	this.checkSetupComplete = function(){
+		$http({
+			method:"GET",
+			url:"api/now/table/x_cion_citrix_it_s_authenticated_customer_id",
+			headers:{
+				"Accept":"application/json",
+				"X-UserToken":window.g_ck
+			}
+		}).then(function(response){
+			if(response.data && response.data.result && response.data.result.length > 0){
+				window.location = "/x_cion_citrix_it_s_connection_status.do";				
+			}
+		});	
+	};
+	
+});]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_ctx_getting_started.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.14/angular.min.js"></script>
+		<style>
+			.alert{
+				background-color:#fefefe;
+				border:none;
+			}
+			header{
+				padding-left:40px;
+				padding-right:40px;
+			}
+			h2{
+				font-weight:bold;
+			}
+			
+			.separator{
+				border:none;
+				border-bottom: solid #E6E6E6 2px;
+				width:100%;
+				height:3px;
+			
+			}
+			.steps{
+				padding-top:20px;
+			}
+			
+			.list-step{
+				display:inline-block;
+				border:none;
+				width:21%;
+			}
+			
+			.list-arrow{				
+				width:5%;
+				border:none;
+			}
+			
+			.box{
+				border: solid #E6E6E6 2px;				
+				padding:15px;
+				min-height: 110px;	
+				max-width:600px;
+				overflow:auto;						
+			}
+			
+			.box-icon{			
+				padding:0;
+				position: absolute;
+				top:35px;
+				left:10px;
+				
+			}
+			
+			.box-content{
+				padding:0;
+				position: absolute;
+				top:10px;
+				left:50px;
+				margin-right:20px;
+			}
+
+			
+			.started{
+				border:none;
+				border-radius:5px;
+				padding-left:35px;
+				padding-right:35px;
+				margin-left: 25px;
+				margin-top: 10px;
+				font-size:13px;
+				
+			}
+			
+			.arrow{
+				padding-top:1%;
+				padding-left:0;
+				padding-right:0;
+				max-width:150px;
+			
+			}
+			.arrows{
+				padding-left:45%;
+				content: "\203A";
+				font-size:50px;
+			    color:#E6E6E6;
+				
+			}
+
+			/* The Modal (background) */
+			.modal {
+				display: none; /* Hidden by default */
+				position: fixed; /* Stay in place */
+				z-index: 1; /* Sit on top */
+				padding-top: 100px; /* Location of the box */
+				left: 0;
+				top: 0;
+				width: 100%; /* Full width */
+				height: 100%; /* Full height */
+				overflow: auto; /* Enable scroll if needed */
+				background-color: rgb(0,0,0); /* Fallback color */
+				background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+			}
+
+			/* Modal Content */
+			.modal-content {
+				background-color: #fefefe;
+				margin: auto;
+				padding: 20px;
+				border: 1px solid #888;
+				width: 80%;
+			}
+
+			/* The Close Button */
+			.closebtn {
+				color: #343d47; ($color-darkest)
+				width: 10px;
+				height: 10px;
+				padding:0;
+				min-height:10px;
+			}
+
+			.closebtn:hover,
+			.closebtn:focus {
+				color: #000;
+				text-decoration: none;
+				cursor: pointer;
+			}
+			
+			.modal_button{
+				width:100%;
+			}
+			
+			.modal_label{
+				text-align:left;
+			}
+			
+			#wait-message-container{
+				padding:15px;
+			}
+			
+			.form-groups{
+				padding-left:20px;
+				padding-right:20px;
+			}
+		
+			.bottom_right{
+				position:absolute;
+				bottom:0;
+				right:0;
+			}
+			
+			.no_left_pad{
+				padding-left:0;
+			}
+		</style>
+	</head>
+	<body ng-app="homeApp" ng-controller="homeAppCtrl" ng-cloak="">
+		<header>
+			
+			<div class="col-md-12 ">
+				<div class="col-md-12">
+					<div class="col-md-12 no_left_pad">
+						<h2>Citrix IT Service Management Connector Guided Setup</h2>
+						<h3>Getting Started</h3>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="col-md-9 no_left_pad">
+						<h5>Welcome to the Citrix IT Service Management Connector guided setup. You don't have any Citrix IT Service Management Connector <br/>linked to ServiceNow. Follow the instructions below to get the connector up and running
+						</h5>
+					</div>
+					<div class="col-md-2">
+						<a href="https://citrix.cloud.com/" target="_blank" class="btn btn-lg btn-info started">
+							Get Started
+						</a>
+					</div>
+					
+				</div>
+				
+			</div>
+			<div class="col-md-11 col-sm-12">
+				<div class="col-md-12 col-sm-12 separator">
+				</div>
+			</div>	
+		
+			<div class="col-md-12 steps container">		
+				<div class="col-md-2 col-sm-12 box">
+					<div class="box-icon">
+						<img src="subscribe_icon.png" width="29" height="24"/>
+					</div>
+					<div class="box-content">				
+						<p><strong>Subscribe</strong></p>
+						Go to$[SP]<a href="https://citrix.cloud.com/" target="_blank">Citrix Cloud</a>$[SP]and
+						subscribe to the IT Service Management Connector 
+					</div>
+				</div>
+				<div class="col-md-1 col-sm-12 arrow">
+					<span class="arrows">&#8250;</span>
+				</div>
+				<div class="col-md-2 col-sm-12 box">
+					<div class="box-icon">
+						<img src="authenticate_icon.png" width="20" height="28"/>
+					</div>
+					<div class="box-content">
+						<p><strong>Authenticate</strong></p>
+						
+						<a id="auth_link" href="#" ng-click="openAuthModal()">
+							Authenticate
+						</a>$[SP] with your Secure Client ID and Secret
+						
+					</div>								
+				</div>
+				<div class="col-md-1 col-sm-12 arrow">
+					<span class="arrows">&#8250;</span>
+				</div>
+				<div class="col-md-2 col-sm-12 box">
+					<div class="box-icon">
+						<img src="configure_icon.png" width="27" height="27"/>
+					</div>
+					<div class="box-content">
+						<p><strong>Configure</strong></p>
+						Go to the IT Service Management Connector service in Citrix Cloud. Download and configure the Citrix Cloud Connector
+					</div>
+				</div>
+				<div class="col-md-1 col-sm-12 arrow">
+					<span class="arrows">&#8250;</span>
+				</div>
+				<div class="col-md-2 col-sm-12 box">
+					<div class="box-icon">
+						<img src="verify_icon.png" width="26" height="26"/>
+					</div>
+					<div class="box-content">
+						<p><strong>Verify</strong></p>
+						Verify the connection from ServiceNow. You can then start using the IT Service Management Connector
+					</div>
+				</div>
+
+			</div>
+		</header>
+		
+		
+		<!-- INITIAL Authentication modal;-->
+		<div id="modal-authentication">
+			<div class="modal">
+				<div class="modal-dialog small-modal">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button data-dismiss="modal" class="closebtn icon-cross pull-right" ng-click="closeModal()">
+							 <span class="sr-only">Close</span>
+							</button>
+							<h4 class="modal-title">Citrix Cloud Authentication</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-sm-12">
+									<p>Enter your Secure Client ID and secret</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-groups form-horizontal">
+									<div class="form-group">
+										<label for="client_id" class="col-sm-3 modal_label">Client ID</label>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" id="client_id" ng-model="client_id"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="client_secret" class="col-sm-3 modal_label">Secret</label>
+										<div class="col-sm-12">
+											<input type="text" class="form-control" id="client_secret" ng-model="client_secret"/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="row">
+								<div class="col-sm-4">
+									<button class="modal_button btn btn-md btn-default" ng-click="closeModal()">Cancel</button>
+								</div>
+								<div class="col-sm-4">
+									<button class="modal_button btn btn-md btn-default" ng-click="testCredentials()">Test</button>
+								</div>
+								<div class="col-sm-4">
+									<button id="save_client_cred_btn" class="modal_button btn btn-md btn-primary hide" ng-click="openCustomerIDModal()">Save</button>
+								</div>
+								
+							</div>
+							
+						</div>
+						<div id="cred_success" class="alert alert-success hide" role="alert">
+						  Success!
+						</div>
+						<div id="cred_testing" class="alert alert-info hide" role="alert">
+						  Testing Credentials...
+						</div>							
+						<div id="cred_failed" class="alert alert-danger hide" role="alert">
+						  Credentials Failed!
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Customer ID modal;-->
+		<div id="modal-customer-id">
+			<div class="modal">
+				<div class="modal-dialog small-modal">
+										
+					<div class="modal-content">
+						<div class="modal-header">
+							<button data-dismiss="modal" class="closebtn icon-cross pull-right" ng-click="closeModal()">
+							 <span class="sr-only">Close</span>
+							</button>
+							<h4 class="modal-title">Citrix Could Authentication</h4>
+						</div>
+						
+						<div id="wait-message-container">
+							<p>{{auth_msg}}</p>
+						</div>
+						<div class="modal-body" style="display:none;">
+							<div class="row">
+								<div class="col-sm-12">
+									<p>Select the Customer ID to associate with this ServiceNow instance</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-groups form-horizontal">
+									<div class="form-group">
+										<label for="client_id" class="col-sm-3 modal_label">Customer ID</label>
+										<div class="col-sm-12">											
+											<select class="form-control" ng-model="customer" 
+													ng-options="cust as cust.display_name for cust in customers">
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="display:none;">
+							<div class="row">								
+								<div class="col-sm-4">
+									<button class="modal_button btn btn-md btn-default" ng-click="modalBack()">Back</button>
+								</div>
+								<div class="col-sm-4">
+									<button class="modal_button btn btn-md btn-primary" ng-click="saveCustomerId()">Save</button>
+								</div>								
+							</div>
+							
+						</div>
+				
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+		
+
+</j:jelly>]]></html>
+        <name>ctx_getting_started</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:27:57</sys_created_on>
+        <sys_id>d02c0222dbdbd700677d3437b99619b8</sys_id>
+        <sys_mod_count>19</sys_mod_count>
+        <sys_name>ctx_getting_started</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_d02c0222dbdbd700677d3437b99619b8</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-29 14:16:32</sys_updated_on>
+    </sys_ui_page>
+</record_update>

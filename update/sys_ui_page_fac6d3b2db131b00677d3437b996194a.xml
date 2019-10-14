@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[function refreshApplications(){
+	
+	if(confirm("Are you sure you want to refresh Applications?")){
+		var showResult = function(response){
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			if(answer == 'true'){
+				alert('Application data has been refreshed successfully');
+			}else{
+				alert('Unable to refresh Applications, please check the logs');
+			}
+		};
+		var ajax = new GlideAjax('CITSMCAdminTools');
+		ajax.addParam('sysparm_name','refreshApplications');
+		ajax.getXML(showResult);
+	}
+	
+}]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_cion_citrix_it_s_refresh_applications.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	
+	<div class="col-xs-12">
+		<h1>Refresh Application</h1>
+		<p>Use this page to manually refresh the applications available through Citrix IT Service Management Connector</p>
+		<p>Please note that Applications are refreshed hourly through a scheduled job.</p>
+		<div class="col-xs-6">
+			<button onclick="refreshApplications()">Refresh Applications</button>
+		</div>
+	</div>
+
+</j:jelly>]]></html>
+        <name>refresh_applications</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-18 16:34:55</sys_created_on>
+        <sys_id>fac6d3b2db131b00677d3437b996194a</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>refresh_applications</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_ui_page_fac6d3b2db131b00677d3437b996194a</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-18 16:54:39</sys_updated_on>
+    </sys_ui_page>
+</record_update>

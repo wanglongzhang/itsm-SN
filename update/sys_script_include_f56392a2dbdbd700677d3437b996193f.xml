@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXUserSession</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXUserSession</name>
+        <script><![CDATA[var CTXUserSession = Class.create();
+CTXUserSession.prototype = {
+	
+    initialize: function() {
+		this.API_URL = gs.getProperty('x_cion_citrix_it_s.api_url');		
+		this.GET_SESSIONS_ENDPOINT = this.API_URL+"/api/XAXD/GetuserSessions";				
+		this.LOG_OFF_SESSIONS_ENDPOINT = this.API_URL+"/api/XAXD/LogOffSession";
+		this.GET_SESSIONS_HEADERS = {
+			"Content-Type":"application/json",
+			"customerid":"",
+			"Authorization":"CWSAuth bearer="
+		};
+    },
+	
+	API_URL:'',	
+	GET_SESSIONS_ENDPOINT:'',
+	LOG_OFF_SESSIONS_ENDPOINT:'',
+	GET_SESSIONS_HEADERS:{},	
+	
+	_generateDefaultHeaders:function(){
+		var logger = new Logger();
+		var customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+	
+		var headers = this.GET_SESSIONS_HEADERS;
+		
+		var auth = new AuthToken();
+		var token = auth.getToken();
+		var authString = headers["Authorization"];
+		authString += token;
+						
+		headers["customerid"] = customer_id;
+		headers["Authorization"] = authString;
+		
+		return headers;
+	},
+	
+	_generateGetSessionHeaders:function(username){
+		var headers = this._generateDefaultHeaders();		
+		var userTool = new CTXUserTools();
+		var userDomain = userTool.getUserDomain();
+		
+		headers["username"] = userDomain+'\\'+username;
+		
+		return headers;
+	},
+	
+	_generateLogoffSessionHeaders:function(site_id){
+		var headers = this._generateDefaultHeaders();				
+		headers["siteid"] = site_id;
+		
+		return headers;
+	},
+	
+	getUserSessions:function(username){
+		var logger = new Logger();
+		
+		var headers = this._generateGetSessionHeaders(username);		
+		var rest = new RESTRequest();
+		
+		var sessionResponse = rest.get(this.GET_SESSIONS_ENDPOINT,headers);			
+		
+		try{
+			
+			var sessions = JSON.parse(sessionResponse);
+			return sessions;
+		}catch(error){
+			
+			logger.logError("Unable to get user sessions");
+			logger.logError(error);
+			return null;
+		}
+	},
+	logOffUserSession:function(site_id,session_id){
+		var logger = new Logger();		
+		
+		var headers = this._generateLogoffSessionHeaders(site_id);		
+		var body = {"SessionId":session_id};
+		var rest = new RESTRequest();
+		
+		var sessionResponse = rest.post(this.LOG_OFF_SESSIONS_ENDPOINT,headers,body);		
+		
+		return sessionResponse;
+		
+	},
+
+    type: 'CTXUserSession'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:58:56</sys_created_on>
+        <sys_id>f56392a2dbdbd700677d3437b996193f</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>CTXUserSession</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_f56392a2dbdbd700677d3437b996193f</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-08-16 21:24:51</sys_updated_on>
+    </sys_script_include>
+</record_update>

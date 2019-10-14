@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($scope) {
+  /* widget controller */
+  var c = this;	
+	var g_form = $scope.page.g_form;
+	var sessions = {};
+	$scope.user_full_name = '';
+	$scope.chosenAppList = [];
+	$scope.appsDescription = '';
+	/**
+	Add session html element to screen
+	**/
+	var addSessionElement = function(sessionElement){				
+		document.getElementById('sessionList').appendChild(sessionElement);
+	};
+	
+	/**
+	Create link for applications in session
+	**/
+	var createApplicationLink = function(apps){
+		return apps.length + " application(s)";
+	};
+
+	/**
+	Create html element for given session
+	**/
+	var createSessionElement = function(session,sessionIndex){
+
+		var uniqueId = session.SessionKey;
+		var status = session.SessionState;
+		var type = session.SessionType;
+		var apps = session.ApplicationsInUse;
+
+		var template = document.createElement('html');
+		template.innerHTML = document.getElementById('session_template').innerHTML;
+
+		template.querySelector('.radio-input').id = uniqueId;
+		template.querySelector('.session-index').setAttribute('for',uniqueId);
+
+		var sessionMessage = document.createElement('span');
+		sessionMessage.className = "session-label";
+		sessionMessage.innerHTML = 'Session ' + sessionIndex;
+
+		template.querySelector('.session-index').insertBefore(sessionMessage,template.querySelector('.session-index').childNodes[0]);
+
+
+		if(status == 'Disconnected'){
+			template.querySelector('.session-status-dot').className += " session-disconnected";
+			template.querySelector('.session-status').innerHTML = status;
+
+
+		}else if(status == 'Active'){
+			template.querySelector('.session-status-dot').className += " session-connected";
+			template.querySelector('.session-status').innerHTML = session.StartTime + " | " + status;
+
+		}
+
+		if(type == "Desktop"){					
+			template.querySelector('.app-session').style.display = "none";
+
+		}else if(type == 'Application'){
+			template.querySelector('.desktop-session').style.display = "none";					
+
+			var appLink = createApplicationLink(apps);
+			template.querySelector('.app-session').innerHTML = appLink;
+			template.querySelector('.app-session').setAttribute('apps',JSON.stringify(apps));
+		}
+		
+		template.querySelector('.session-launcher').innerHTML = session.LaunchedViaHostName;
+
+		return template;
+	};
+	
+	var openAppModal = function(){
+		document.getElementById('confirm_report_modal').style = "display:block";
+	};
+	
+	$scope.hideAppModal = function(){
+		document.getElementById('confirm_report_modal').style = "display:hide";
+	};
+	
+	if(c.data.sessions){
+		
+		$scope.user_full_name = c.data.user_full_name;
+		
+		document.getElementById('loading_icon').style.display = 'none';
+		var sessionArray = c.data.sessions;
+		
+		if(sessionArray == null || sessionArray.length <= 0){
+			document.getElementById('loading_icon').style.display = 'none';
+			document.getElementById('unable-to-load').classList.remove('hide');
+			return;
+		}
+		var sessionElement;
+		for(var i = 0; i < sessionArray.length; i++){
+			sessionElement = createSessionElement(sessionArray[i],i+1);
+			addSessionElement(sessionElement);
+			sessions[sessionArray[i].SessionKey] = sessionArray[i];
+		}
+		
+		Array.from(document.getElementsByClassName("session-radio")).forEach(function(element){
+			element.addEventListener('click',function(e){							
+				e = e || window.event;
+				
+				var target = e.target;							
+				var sessionId = target.id;				
+				var sessionObj = sessions[sessionId];
+				g_form.setValue('chosen_session',JSON.stringify(sessionObj));
+			});		
+		});
+
+		
+		Array.from(document.getElementsByClassName("app-session")).forEach(function(element){
+			element.addEventListener('click',function(e){							
+				e = e || window.event;
+				var target = e.target;							
+				var apps = target.getAttribute('apps');				
+				
+				$scope.chosenAppList = JSON.parse(apps);
+				$scope.appsDescription = $scope.chosenAppList .length + " applications are running on this session";
+				openAppModal();
+			});		
+		});
+	}
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.header-bar{
+  padding-left:0;
+}
+#user_full_name{
+  font-weight:bold;
+}
+
+.session{
+  margin-bottom:20px;
+}
+
+.session-info-text{
+  font-size:11px;
+  padding:0;
+  margin:0;
+}
+
+.session-index{
+  font-weight:bold;
+}
+.session-info{
+  padding-left:20px;
+}
+
+.session-connected{
+  background-color:#50e568;
+}
+.session-disconnected{
+  background-color:#ffee37;
+}
+.session-status-dot{
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  display: inline-block;	
+  vertical-align:middle;
+}
+
+.session-launched-via{
+  color:#bdbfc1;
+}
+
+.session-launcher{
+  color:black;
+  font-weight:bold;
+}
+
+.no-pad-left{
+  padding-left:0 !important;
+}
+.no-padding{
+  padding:0 !important;
+}
+
+.hide{
+  display:none;
+}
+
+.session-label{
+	padding-left:5px;
+}
+
+.session-radio{
+	float:left;  
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 3; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.modal-title{
+	float:left;
+}
+.modal-close-btn{
+	float:right;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>sp_session_loader</id>
+        <internal>false</internal>
+        <link/>
+        <name>sp_session_loader</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	
+	
+	//Load Sessions
+	var username = gs.getUserName();
+	
+	var ctxUserSession = new CTXUserSession();
+	data.sessions = ctxUserSession.getUserSessions(username);
+	data.user_full_name = gs.getUserDisplayName();
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 15:28:45</sys_created_on>
+        <sys_id>d80f79aadb9bd700677d3437b9961932</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>sp_session_loader</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sp_widget_d80f79aadb9bd700677d3437b9961932</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-07-19 22:55:32</sys_updated_on>
+        <template><![CDATA[<div>
+	<script id="session_template" type="text/html">
+		<div class="col-xs-12 session no-pad-left">
+				
+			<span class="input-group-radio">									
+				
+				<label for="" style="" class="radio-label session-index" ng-click="chooseSession()">
+        	<input id="" type="radio" class="session-radio radio radio-input" name="radio-input"></input>
+					<span class="session-status-dot"></span>
+				</label>
+
+			</span>
+			<div class="col-xs-12 session-info">
+				<p class="session-status session-info-text"></p>
+				<p class="session-launched-via session-info-text">Launched via <span class="session-launcher"></span></p>
+				<a href="#" class="session-type session-info-text app-session"></a>
+				<p class="session-type session-info-text desktop-session">Desktop Session</p>
+			</div>
+		</div>
+	</script>
+	
+	<div id="content">
+		<div class="col-xs-12 header-bar">
+			<p>All Sessions for <span id="user_full_name">{{user_full_name}}</span></p>
+		</div>
+		<div id='sessionList' class="col-xs-12 session-list no-pad-left">
+			<img id="loading_icon" src="loading_status_icon.gif" width="26" height="26" class="status_icon"/>	
+			<p id="unable-to-load" class="hide">No sessions found for user</p>
+		</div>
+	</div>
+  
+  <div class="confirm-modal">
+    <div id='confirm_report_modal' class="modal">
+      <div class="modal-dialog small-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Running Applications</h4>
+            <button class="btn btn-default modal-close-btn" ng-click="hideAppModal()">X</button>
+          </div>
+         
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <p id="description"><span><b id="group_name">{{appsDescription}}</b></span></p>
+                <table class="table table-hover original-table list-grid table-striped" style="cursor: default; user-select: text;">
+                  <thead class="table-body-headers">
+                    <tr class="table-header">
+                      <th class="table-column-header">
+                        <a class="sort-columns">Name</a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="apps_table" class="list_table_tbody">
+                    <tr class="data_row" ng-repeat="app in chosenAppList">
+											<td class="vt grid-field">{{app}}</td>
+                    </tr>	
+                  </tbody>
+                </table>                
+              </div>
+            </div>    
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>]]></template>
+    </sp_widget>
+</record_update>

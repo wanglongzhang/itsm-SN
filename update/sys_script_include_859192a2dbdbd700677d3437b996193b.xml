@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_cion_citrix_it_s.CTXAppProvision</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>CTXAppProvision</name>
+        <script><![CDATA[var CTXAppProvision = Class.create();
+CTXAppProvision.prototype = {
+    initialize: function() {
+		
+		this.API_URL = gs.getProperty('x_cion_citrix_it_s.api_url');		
+		this.GET_APPS_ENDPOINT = this.API_URL+"/api/XAXD/GetApplication";				
+		this.ASSIGN_APPS_ENDPOINT = this.API_URL+"/api/XAXD/AssignApplication";
+		this.GET_APPS_HEADERS =  {
+			"Content-Type":"application/json",
+			"customerid":"",
+			"Authorization":"CWSAuth bearer="		
+		};
+    },	
+	API_URL:'',
+	GET_APPS_ENDPOINT:'',
+	ASSIGN_APPS_ENDPOINT:'',
+	GET_APPS_HEADERS: {},	
+	
+	
+	_generateAppHeaders:function(){
+		var logger = new Logger();
+		var customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+	
+		var headers = this.GET_APPS_HEADERS;
+		
+		var auth = new AuthToken();
+		var token = auth.getToken();
+		var authString = headers["Authorization"];
+		authString += token;
+		
+		headers["customerid"] = customer_id;
+		headers["Authorization"] = authString;
+		
+		return headers;
+		
+	},
+	
+	getApplications:function(){
+		var logger = new Logger();
+		
+		var headers = this._generateAppHeaders();		
+		var rest = new RESTRequest();
+		var appResponse = rest.get(this.GET_APPS_ENDPOINT,headers);
+	
+		try{
+			
+			var apps = JSON.parse(appResponse);
+			return apps;
+		}catch(error){
+			
+			logger.logError("Unable to get applications");
+			logger.logError(error);
+			return null;
+		}
+		
+	},
+	
+	_getAssignUsers:function(userArray){
+		var userTool = new CTXUserTools();
+		var users = [];
+	
+		for(var i = 0; i < userArray.length; i++){
+			
+			if(userTool.isValidUser(userArray[i])){
+				users.push({
+					"UserName":userTool.getUserName(userArray[i]),
+					"domain":userTool.getUserDomain(userArray[i])
+				});
+			}
+		}
+		return users;
+	},
+	_generateAssignAppRequestBody:function(users,application,deliveryGroup,siteId){
+		var customer_id = gs.getProperty('x_cion_citrix_it_s.customer_id');
+		
+		var requestUsers = this._getAssignUsers(users);
+		
+		var body = {
+			"CustomerId":customer_id,
+			"user":requestUsers,
+			"applications":[{"Name":application,"DesktopGroup":deliveryGroup}],
+			"siteId":siteId
+		};
+	
+		return body;
+	},
+	
+	addUserToDeliveryGroup:function(users,application,deliveryGroup,siteId){
+		var logger = new Logger();		
+		
+		var headers = this._generateAppHeaders();		
+		headers["siteid"] = siteId;
+		var rest = new RESTRequest();
+		var body = this._generateAssignAppRequestBody(users,application,deliveryGroup,siteId);
+		
+		var response = rest.post(this.ASSIGN_APPS_ENDPOINT,headers,body);
+				
+		return response;
+	},
+
+    type: 'CTXAppProvision'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 16:50:55</sys_created_on>
+        <sys_id>859192a2dbdbd700677d3437b996193b</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>CTXAppProvision</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_script_include_859192a2dbdbd700677d3437b996193b</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-09-13 21:01:07</sys_updated_on>
+    </sys_script_include>
+</record_update>

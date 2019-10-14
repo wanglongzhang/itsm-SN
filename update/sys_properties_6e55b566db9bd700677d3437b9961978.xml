@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>User Domain</description>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_cion_citrix_it_s.user_domain</name>
+        <read_roles>x_cion_citrix_it_s.ctx_itsm_admin</read_roles>
+        <suffix>user_domain</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>sebastiang</sys_created_by>
+        <sys_created_on>2018-07-17 14:46:56</sys_created_on>
+        <sys_id>6e55b566db9bd700677d3437b9961978</sys_id>
+        <sys_mod_count>31</sys_mod_count>
+        <sys_name>x_cion_citrix_it_s.user_domain</sys_name>
+        <sys_package display_value="Citrix IT Service Management Connector" source="x_cion_citrix_it_s">bb5ca9a2db9bd700677d3437b996190f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Citrix IT Service Management Connector">bb5ca9a2db9bd700677d3437b996190f</sys_scope>
+        <sys_update_name>sys_properties_6e55b566db9bd700677d3437b9961978</sys_update_name>
+        <sys_updated_by>sebastiang</sys_updated_by>
+        <sys_updated_on>2018-09-25 17:27:50</sys_updated_on>
+        <type>string</type>
+        <value/>
+        <write_roles>x_cion_citrix_it_s.ctx_itsm_admin</write_roles>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=6e55b566db9bd700677d3437b9961978"/>
+</record_update>
